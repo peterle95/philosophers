@@ -6,15 +6,14 @@
 /*   By: pmolzer <pmolzer@student.42berlin.de>      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/07/11 14:58:22 by pmolzer           #+#    #+#             */
-/*   Updated: 2024/07/11 15:03:12 by pmolzer          ###   ########.fr       */
+/*   Updated: 2024/07/11 22:40:26 by pmolzer          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "../includes/philo.h"
 
-void    init_program(t_program *program, int ac, char **av)
+int init_threads(t_program *program)
 {
-    // Initialize mutexes
     for (int i = 0; i < program->num_philosophers; i++)
     {
         if (pthread_mutex_init(&program->forks[i], NULL) != 0)
@@ -30,8 +29,11 @@ void    init_program(t_program *program, int ac, char **av)
         cleanup_program(&program);
         return 1;
     }
+    return(0);
+}
 
-    // Initialize philosophers
+int init_philosphers(t_program *program)
+{
     for (int i = 0; i < program->num_philosophers; i++)
     {
         program->philosophers[i].id = i + 1;
@@ -41,4 +43,13 @@ void    init_program(t_program *program, int ac, char **av)
         program->philosophers[i].last_meal_time = 0;
         program->philosophers[i].program = &program;
     }
+    return(0);
+}
+
+void    init_program(t_program *program, int ac, char **av)
+{
+    if(init_threads(program) != 0)
+        return(EXIT_FAILURE);
+    if(init_philosophers(program) != 0)
+        return(EXIT_FAILURE);
 }
