@@ -6,11 +6,25 @@
 /*   By: pmolzer <pmolzer@student.42berlin.de>      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/07/11 14:58:22 by pmolzer           #+#    #+#             */
-/*   Updated: 2024/07/11 22:40:26 by pmolzer          ###   ########.fr       */
+/*   Updated: 2024/07/12 13:35:15 by pmolzer          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "../includes/philo.h"
+
+int assign_values(t_program *program, int ac, char **av)
+{
+    program->num_philosophers = ft_atol(av[1]);
+    program->time_to_die = ft_atol(av[2]);
+    program->time_to_eat = ft_atol(av[3]);
+    program->time_to_sleep = ft_atol(av[4]);
+    if(ac == 6)
+        program->num_times_to_eat = ft_atol(av[5]);
+    else
+        program->num_times_to_eat = -1;
+    program->simulation_stop = 0;
+    return(0);
+}
 
 int init_threads(t_program *program)
 {
@@ -19,20 +33,20 @@ int init_threads(t_program *program)
         if (pthread_mutex_init(&program->forks[i], NULL) != 0)
         {
             printf("Error: Mutex initialization failed\n");
-            cleanup_program(&program);
+            cleanup_program(program);
             return 1;
         }
     }
     if (pthread_mutex_init(&program->write_mutex, NULL) != 0)
     {
         printf("Error: Write mutex initialization failed\n");
-        cleanup_program(&program);
+        cleanup_program(program);
         return 1;
     }
     return(0);
 }
 
-int init_philosphers(t_program *program)
+int init_philosophers(t_program *program)
 {
     for (int i = 0; i < program->num_philosophers; i++)
     {
@@ -46,8 +60,10 @@ int init_philosphers(t_program *program)
     return(0);
 }
 
-void    init_program(t_program *program, int ac, char **av)
+int    init_program(t_program *program, int ac, char **av)
 {
+    if (assign_values(program, ac, av) != 0)
+        return(EXIT_FAILURE);
     if(init_threads(program) != 0)
         return(EXIT_FAILURE);
     if(init_philosophers(program) != 0)
