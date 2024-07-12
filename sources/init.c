@@ -6,7 +6,7 @@
 /*   By: pmolzer <pmolzer@student.42berlin.de>      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/07/11 14:58:22 by pmolzer           #+#    #+#             */
-/*   Updated: 2024/07/12 13:35:15 by pmolzer          ###   ########.fr       */
+/*   Updated: 2024/07/12 19:16:50 by pmolzer          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -14,6 +14,17 @@
 
 int assign_values(t_program *program, int ac, char **av)
 {
+    program->forks = malloc(sizeof(pthread_mutex_t) * program->num_philosophers);
+if (program->forks == NULL) {
+    printf("Error: Memory allocation for forks failed\n");
+    return 1;
+}
+program->philosopher_threads = malloc(sizeof(pthread_t) * program->num_philosophers);
+if (program->philosopher_threads == NULL) {
+    printf("Error: Memory allocation for philosopher threads failed\n");
+    free(program->forks);  // Free previously allocated memory
+    return 1;
+}
     program->num_philosophers = ft_atol(av[1]);
     program->time_to_die = ft_atol(av[2]);
     program->time_to_eat = ft_atol(av[3]);
@@ -33,14 +44,14 @@ int init_threads(t_program *program)
         if (pthread_mutex_init(&program->forks[i], NULL) != 0)
         {
             printf("Error: Mutex initialization failed\n");
-            cleanup_program(program);
+           // cleanup_program(program);
             return 1;
         }
     }
     if (pthread_mutex_init(&program->write_mutex, NULL) != 0)
     {
         printf("Error: Write mutex initialization failed\n");
-        cleanup_program(program);
+        // cleanup_program(program);
         return 1;
     }
     return(0);
@@ -55,12 +66,12 @@ int init_philosophers(t_program *program)
         program->philosophers[i].right_fork = (i + 1) % program->num_philosophers;
         program->philosophers[i].meals_eaten = 0;
         program->philosophers[i].last_meal_time = 0;
-        program->philosophers[i].program = &program;
+        program->philosophers[i].program = program;
     }
     return(0);
 }
 
-int    init_program(t_program *program, int ac, char **av)
+/* int    init_program(t_program *program, int ac, char **av)
 {
     if (assign_values(program, ac, av) != 0)
         return(EXIT_FAILURE);
@@ -68,4 +79,20 @@ int    init_program(t_program *program, int ac, char **av)
         return(EXIT_FAILURE);
     if(init_philosophers(program) != 0)
         return(EXIT_FAILURE);
+    return(0);
+} */
+
+int init_program(t_program *program, int ac, char **av)
+{
+    if (assign_values(program, ac, av) != 0)
+        return 1;
+    if(init_threads(program) != 0)
+    {
+        free(program->forks);
+        free(program->philosopher_threads);
+        return 1;
+    }
+    if(init_philosophers(program) != 0)
+        return(EXIT_FAILURE);
+    return 0;
 }

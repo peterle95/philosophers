@@ -6,7 +6,7 @@
 /*   By: pmolzer <pmolzer@student.42berlin.de>      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/07/11 13:54:04 by pmolzer           #+#    #+#             */
-/*   Updated: 2024/07/12 13:45:16 by pmolzer          ###   ########.fr       */
+/*   Updated: 2024/07/12 18:49:02 by pmolzer          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -20,6 +20,16 @@
 #include <sys/time.h> // gettimeofday
 #include<unistd.h> // usleep & write
 #include <limits.h>
+
+#define DEBUG 1  // Set to 0 to disable debug prints
+
+#if DEBUG
+#define debug_print(fmt, ...) \
+    do { fprintf(stderr, "%s:%d:%s(): " fmt, __FILE__, \
+                __LINE__, __func__, __VA_ARGS__); } while (0)
+#else
+#define debug_print(fmt, ...) do {} while (0)
+#endif
 
 typedef struct s_program
 {
