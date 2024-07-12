@@ -6,7 +6,7 @@
 /*   By: pmolzer <pmolzer@student.42berlin.de>      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/07/11 14:58:22 by pmolzer           #+#    #+#             */
-/*   Updated: 2024/07/12 19:16:50 by pmolzer          ###   ########.fr       */
+/*   Updated: 2024/07/12 21:19:24 by pmolzer          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -14,17 +14,6 @@
 
 int assign_values(t_program *program, int ac, char **av)
 {
-    program->forks = malloc(sizeof(pthread_mutex_t) * program->num_philosophers);
-if (program->forks == NULL) {
-    printf("Error: Memory allocation for forks failed\n");
-    return 1;
-}
-program->philosopher_threads = malloc(sizeof(pthread_t) * program->num_philosophers);
-if (program->philosopher_threads == NULL) {
-    printf("Error: Memory allocation for philosopher threads failed\n");
-    free(program->forks);  // Free previously allocated memory
-    return 1;
-}
     program->num_philosophers = ft_atol(av[1]);
     program->time_to_die = ft_atol(av[2]);
     program->time_to_eat = ft_atol(av[3]);

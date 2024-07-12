@@ -6,7 +6,7 @@
 /*   By: pmolzer <pmolzer@student.42berlin.de>      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/07/11 13:54:04 by pmolzer           #+#    #+#             */
-/*   Updated: 2024/07/12 18:49:02 by pmolzer          ###   ########.fr       */
+/*   Updated: 2024/07/12 21:26:23 by pmolzer          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -20,6 +20,8 @@
 #include <sys/time.h> // gettimeofday
 #include<unistd.h> // usleep & write
 #include <limits.h>
+
+#define MAX_PHILOS 1000
 
 #define DEBUG 1  // Set to 0 to disable debug prints
 

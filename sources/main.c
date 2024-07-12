@@ -6,7 +6,7 @@
 /*   By: pmolzer <pmolzer@student.42berlin.de>      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/07/11 13:55:31 by pmolzer           #+#    #+#             */
-/*   Updated: 2024/07/12 19:15:54 by pmolzer          ###   ########.fr       */
+/*   Updated: 2024/07/12 21:26:52 by pmolzer          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -60,26 +60,44 @@
     return 0;
 } */
 
+int    allocate_memory(t_program *program)
+{
+    printf("Allocating for %d philosophers\n", MAX_PHILOS);
+    // Allocate memory for philosophers and forks
+    program->philosophers = malloc(sizeof(t_philosopher) * MAX_PHILOS);
+    if (!program->philosophers)
+    {
+        printf("Error: Memory allocation failed\n");
+       // cleanup_program(&program);
+        return 1;
+    }
+    program->forks = malloc(sizeof(pthread_mutex_t) * MAX_PHILOS);
+if (program->forks == NULL) {
+    fprintf(stderr, "Failed to allocate memory for forks\n");
+    printf("Error: Memory allocation for forks failed\n");
+    return 1;
+}
+program->philosopher_threads = malloc(sizeof(pthread_t) * MAX_PHILOS);
+if (program->philosopher_threads == NULL) {
+    printf("Error: Memory allocation for philosopher threads failed\n");
+    free(program->forks);  // Free previously allocated memory
+    return 1;
+}
+return(0);
+}
+
 int main(int ac, char **av)
 {
     t_program program;  // Changed from t_program *program
-
+    
+    if(allocate_memory(&program) != 0)
+        return (EXIT_FAILURE);
     if(validate_input(ac, av) != 0)
         return(EXIT_FAILURE);
-
     // Initialize program structure with command line arguments
     if (init_program(&program, ac, av) != 0)
     {
         printf("Error: Invalid arguments\n");
-        return 1;
-    }
-
-    // Allocate memory for philosophers and forks
-    program.philosophers = malloc(sizeof(t_philosopher) * program.num_philosophers);
-    if (!program.philosophers)
-    {
-        printf("Error: Memory allocation failed\n");
-       // cleanup_program(&program);
         return 1;
     }
 
