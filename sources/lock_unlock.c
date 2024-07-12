@@ -6,7 +6,7 @@
 /*   By: pmolzer <pmolzer@student.42berlin.de>      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/07/12 13:44:35 by pmolzer           #+#    #+#             */
-/*   Updated: 2024/07/12 19:00:29 by pmolzer          ###   ########.fr       */
+/*   Updated: 2024/07/12 21:33:03 by pmolzer          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -120,4 +120,21 @@ void unlock_forks(t_philosopher *philo)
     debug_print("Philosopher %d unlocked left fork %d\n", philo->id, philo->left_fork);
     pthread_mutex_unlock(&philo->program->forks[philo->right_fork]);
     debug_print("Philosopher %d unlocked right fork %d\n", philo->id, philo->right_fork);
+}
+
+int create_philosopher_threads(t_program *program)
+{
+    struct timeval start_time;
+    gettimeofday(&start_time, NULL);
+    program->start_time = start_time.tv_sec * 1000LL + start_time.tv_usec / 1000;
+
+    for (int i = 0; i < program->num_philosophers; i++)
+    {
+        if (pthread_create(&program->philosopher_threads[i], NULL, philosopher_routine, &program->philosophers[i]) != 0)
+        {
+            printf("Error: Failed to create thread for philosopher %d\n", i + 1);
+            return 1;
+        }
+    }
+    return 0;
 }

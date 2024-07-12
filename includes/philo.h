@@ -6,7 +6,7 @@
 /*   By: pmolzer <pmolzer@student.42berlin.de>      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/07/11 13:54:04 by pmolzer           #+#    #+#             */
-/*   Updated: 2024/07/12 21:26:23 by pmolzer          ###   ########.fr       */
+/*   Updated: 2024/07/12 21:33:26 by pmolzer          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -73,6 +73,9 @@ long long ft_atol(const char *str);
 // Lock & Unlock Mutexes
 int lock_forks(t_philosopher *philo);
 void unlock_forks(t_philosopher *philo);
+
+// Philosophers
+int create_philosopher_threads(t_program *program);
 
 
 void *philosopher_routine(void *ac);

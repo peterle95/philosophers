@@ -6,7 +6,7 @@
 /*   By: pmolzer <pmolzer@student.42berlin.de>      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/07/11 13:55:31 by pmolzer           #+#    #+#             */
-/*   Updated: 2024/07/12 21:26:52 by pmolzer          ###   ########.fr       */
+/*   Updated: 2024/07/12 21:33:39 by pmolzer          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -100,7 +100,13 @@ int main(int ac, char **av)
         printf("Error: Invalid arguments\n");
         return 1;
     }
-
+    // Create philosopher threads
+    if (create_philosopher_threads(&program) != 0)
+    {
+        printf("Error: Failed to create philosopher threads\n");
+       // cleanup_program(&program);
+        return 1;
+    }
     // Start simulation
     /* if (start_simulation(&program) != 0)
     {
