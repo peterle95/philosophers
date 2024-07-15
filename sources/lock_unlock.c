@@ -6,7 +6,7 @@
 /*   By: pmolzer <pmolzer@student.42berlin.de>      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/07/12 13:44:35 by pmolzer           #+#    #+#             */
-/*   Updated: 2024/07/15 12:01:49 by pmolzer          ###   ########.fr       */
+/*   Updated: 2024/07/15 14:31:47 by pmolzer          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -101,16 +101,16 @@ int lock_forks(t_philosopher *philo)
     // Always lock the lower-numbered fork first to prevent deadlock
     if (philo->left_fork < philo->right_fork)
     {
-        pthread_mutex_lock(&philo->program->forks[philo->left_fork]);
+        pthread_mutex_lock(&philo->program->forks_mutex[philo->left_fork]);
         debug_print("Philosopher %d locked left fork %d\n", philo->id, philo->left_fork);
-        pthread_mutex_lock(&philo->program->forks[philo->right_fork]);
+        pthread_mutex_lock(&philo->program->forks_mutex[philo->right_fork]);
         debug_print("Philosopher %d locked right fork %d\n", philo->id, philo->right_fork);
     }
     else
     {
-        pthread_mutex_lock(&philo->program->forks[philo->right_fork]);
+        pthread_mutex_lock(&philo->program->forks_mutex[philo->right_fork]);
         debug_print("Philosopher %d locked right fork %d\n", philo->id, philo->right_fork);
-        pthread_mutex_lock(&philo->program->forks[philo->left_fork]);
+        pthread_mutex_lock(&philo->program->forks_mutex[philo->left_fork]);
         debug_print("Philosopher %d locked left fork %d\n", philo->id, philo->left_fork);
     }
 
@@ -129,9 +129,9 @@ int lock_forks(t_philosopher *philo)
 void unlock_forks(t_philosopher *philo)
 {
     debug_print("Philosopher %d unlocking forks\n", philo->id);
-    pthread_mutex_unlock(&philo->program->forks[philo->left_fork]);
+    pthread_mutex_unlock(&philo->program->forks_mutex[philo->left_fork]);
     debug_print("Philosopher %d unlocked left fork %d\n", philo->id, philo->left_fork);
-    pthread_mutex_unlock(&philo->program->forks[philo->right_fork]);
+    pthread_mutex_unlock(&philo->program->forks_mutex[philo->right_fork]);
     debug_print("Philosopher %d unlocked right fork %d\n", philo->id, philo->right_fork);
 }
 

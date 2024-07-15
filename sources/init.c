@@ -6,7 +6,7 @@
 /*   By: pmolzer <pmolzer@student.42berlin.de>      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/07/11 14:58:22 by pmolzer           #+#    #+#             */
-/*   Updated: 2024/07/13 17:37:31 by pmolzer          ###   ########.fr       */
+/*   Updated: 2024/07/15 14:31:11 by pmolzer          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -30,7 +30,7 @@ int init_threads(t_program *program)
 {
     for (int i = 0; i < program->num_philosophers; i++)
     {
-        if (pthread_mutex_init(&program->forks[i], NULL) != 0)
+        if (pthread_mutex_init(&program->forks_mutex[i], NULL) != 0)
         {
             printf("Error: Mutex initialization failed\n");
            // cleanup_program(program);
@@ -81,7 +81,7 @@ int init_program(t_program *program, int ac, char **av)
         return 1;
     if(init_threads(program) != 0)
     {
-        free(program->forks);
+        free(program->forks_mutex);
         free(program->philosopher_threads);
         return 1;
     }

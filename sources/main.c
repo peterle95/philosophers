@@ -6,7 +6,7 @@
 /*   By: pmolzer <pmolzer@student.42berlin.de>      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/07/11 13:55:31 by pmolzer           #+#    #+#             */
-/*   Updated: 2024/07/15 12:03:37 by pmolzer          ###   ########.fr       */
+/*   Updated: 2024/07/15 14:33:38 by pmolzer          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -70,7 +70,7 @@ void stop_simulation(t_program *program)
         }
     }
     
-    if (pthread_join(program->death_clock, NULL) != 0)
+    if (pthread_join(*program->death_clock, NULL) != 0)
     {
         printf("Error: Failed to join monitor thread\n");
     }
@@ -87,16 +87,15 @@ int    allocate_memory(t_program *program)
        // cleanup_program(&program);
         return 1;
     }
-    program->forks = malloc(sizeof(pthread_mutex_t) * MAX_PHILOS);
-if (program->forks == NULL) {
-    fprintf(stderr, "Failed to allocate memory for forks\n");
-    printf("Error: Memory allocation for forks failed\n");
+    program->forks_mutex = malloc(sizeof(pthread_mutex_t) * MAX_PHILOS);
+if (program->forks_mutex == NULL) {
+    printf("Error: Memory allocation for forks_mutex failed\n");
     return 1;
 }
 program->philosopher_threads = malloc(sizeof(pthread_t) * MAX_PHILOS);
 if (program->philosopher_threads == NULL) {
     printf("Error: Memory allocation for philosopher threads failed\n");
-    free(program->forks);  // Free previously allocated memory
+    free(program->forks_mutex);  // Free previously allocated memory
     return 1;
 }
 return(0);
@@ -129,7 +128,7 @@ int main(int ac, char **av)
     stop_simulation(&program);
     // Cleanup
     cleanup_program(&program);
-    free(program.forks);
+    free(program.forks_mutex);
     free(program.philosopher_threads);
     return 0;
 }

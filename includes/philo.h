@@ -6,7 +6,7 @@
 /*   By: pmolzer <pmolzer@student.42berlin.de>      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/07/11 13:54:04 by pmolzer           #+#    #+#             */
-/*   Updated: 2024/07/15 11:58:52 by pmolzer          ###   ########.fr       */
+/*   Updated: 2024/07/15 14:24:36 by pmolzer          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -42,7 +42,7 @@ typedef struct s_program
     int num_times_to_eat;  // Optional, -1 if not specified
     
     pthread_t *philosopher_threads;
-    pthread_mutex_t *forks;
+    pthread_mutex_t *forks_mutex;
     pthread_mutex_t write_mutex;  // For synchronized console output
     pthread_t *death_clock;
     
