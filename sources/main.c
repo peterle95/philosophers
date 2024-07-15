@@ -6,7 +6,7 @@
 /*   By: pmolzer <pmolzer@student.42berlin.de>      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/07/15 15:36:15 by pmolzer           #+#    #+#             */
-/*   Updated: 2024/07/15 17:12:31 by pmolzer          ###   ########.fr       */
+/*   Updated: 2024/07/15 17:42:46 by pmolzer          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -130,15 +130,16 @@ bool check_philosopher_death(t_philosopher *philo, t_data *data)
     long long current_time = get_current_time();
     long long time_since_last_meal = current_time - philo->last_meal_time;
 
-    if (time_since_last_meal >= data->time_to_die)
+    if (time_since_last_meal > data->time_to_die)
     {
         pthread_mutex_lock(&data->stop_mutex);
         if (!data->simulation_stop)
         {
             data->simulation_stop = 1;
+            long long death_time = philo->last_meal_time + data->time_to_die;
             pthread_mutex_unlock(&data->stop_mutex);
             pthread_mutex_lock(&data->write_lock);
-            printf("%lld %d died\n", data->time_to_die + philo->last_meal_time - data->start_time, philo->id);
+            printf("%lld %d died\n", death_time - data->start_time, philo->id);
             pthread_mutex_unlock(&data->write_lock);
             return true;
         }
@@ -192,8 +193,9 @@ void *philosopher_routine(void *arg)
         return NULL;
     }
 
+    // Introduce a more significant delay for even-numbered philosophers
     if (philo->id % 2 == 0)
-        usleep(1000); // Delay even-numbered philosophers slightly
+        usleep(data->time_to_eat * 500);  // Half of time_to_eat in microseconds
 
     while (1)
     {
@@ -317,15 +319,6 @@ int main(int argc, char **argv)
     if (init_data(&data, argc, argv) != 0)
         return 1;
 
-    usleep(1000); // Small delay before starting threads
-
-    if (pthread_create(&monitor_thread, NULL, monitor_routine, &data) != 0)
-    {
-        printf("Error creating monitor thread\n");
-        cleanup(&data);
-        return 1;
-    }
-
     // Create threads for philosophers
     for (i = 0; i < data.num_philosophers; i++)
     {
@@ -335,6 +328,20 @@ int main(int argc, char **argv)
             cleanup(&data);
             return 1;
         }
+    }
+
+    // Small delay to ensure all threads have started
+    usleep(1000);
+
+    // Set the start time after all threads have been created
+    data.start_time = get_current_time();
+
+    // Create monitor thread after all philosopher threads
+    if (pthread_create(&monitor_thread, NULL, monitor_routine, &data) != 0)
+    {
+        printf("Error creating monitor thread\n");
+        cleanup(&data);
+        return 1;
     }
 
     // Join threads
