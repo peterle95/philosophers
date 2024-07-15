@@ -6,7 +6,7 @@
 /*   By: pmolzer <pmolzer@student.42berlin.de>      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/07/11 13:54:04 by pmolzer           #+#    #+#             */
-/*   Updated: 2024/07/13 17:40:50 by pmolzer          ###   ########.fr       */
+/*   Updated: 2024/07/15 11:58:52 by pmolzer          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -44,6 +44,7 @@ typedef struct s_program
     pthread_t *philosopher_threads;
     pthread_mutex_t *forks;
     pthread_mutex_t write_mutex;  // For synchronized console output
+    pthread_t *death_clock;
     
     struct s_philosopher *philosophers;
     

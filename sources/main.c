@@ -6,7 +6,7 @@
 /*   By: pmolzer <pmolzer@student.42berlin.de>      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/07/11 13:55:31 by pmolzer           #+#    #+#             */
-/*   Updated: 2024/07/13 19:50:17 by pmolzer          ###   ########.fr       */
+/*   Updated: 2024/07/15 12:03:37 by pmolzer          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -60,6 +60,22 @@
     return 0;
 } */
 
+void stop_simulation(t_program *program)
+{
+    for (int i = 0; i < program->num_philosophers; i++)
+    {
+        if (pthread_join(program->philosopher_threads[i], NULL) != 0)
+        {
+            printf("Error: Failed to join philosopher thread\n");
+        }
+    }
+    
+    if (pthread_join(program->death_clock, NULL) != 0)
+    {
+        printf("Error: Failed to join monitor thread\n");
+    }
+}
+
 int    allocate_memory(t_program *program)
 {
     printf("Allocating for %d philosophers\n", MAX_PHILOS);
@@ -110,16 +126,7 @@ int main(int ac, char **av)
     }
    // join_threads(program);
 // Wait for monitor thread to finish
-
-
-    // Wait for all philosopher threads to finish
-    for (int i = 0; i < program.num_philosophers; i++)
-    {
-        if (pthread_join(program.philosopher_threads[i], NULL) != 0)
-        {
-            printf("Error: Failed to join philosopher thread\n");
-        }
-    }
+    stop_simulation(&program);
     // Cleanup
     cleanup_program(&program);
     free(program.forks);
