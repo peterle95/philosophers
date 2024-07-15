@@ -5,131 +5,326 @@
 /*                                                    +:+ +:+         +:+     */
 /*   By: pmolzer <pmolzer@student.42berlin.de>      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2024/07/11 13:55:31 by pmolzer           #+#    #+#             */
-/*   Updated: 2024/07/15 14:33:38 by pmolzer          ###   ########.fr       */
+/*   Created: 2024/07/15 15:36:15 by pmolzer           #+#    #+#             */
+/*   Updated: 2024/07/15 15:55:17 by pmolzer          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "../includes/philo.h"
+/* ************************************************************************** */
+/*                                                                            */
+/*                                                        :::      ::::::::   */
+/*   philo.h                                            :+:      :+:    :+:   */
+/*                                                    +:+ +:+         +:+     */
+/*   By: pmolzer <pmolzer@student.42berlin.de>      +#+  +:+       +#+        */
+/*                                                +#+#+#+#+#+   +#+           */
+/*   Created: 2024/07/11 13:54:04 by pmolzer           #+#    #+#             */
+/*   Updated: 2024/07/15 15:46:04 by pmolzer          ###   ########.fr       */
+/*                                                                            */
+/* ************************************************************************** */
 
-/* int main(int ac, char **av)
+#include <stdio.h> // printf is allowed
+#include <string.h> // memset is allowed
+#include <pthread.h>
+#include <stdlib.h> // malloc & free
+#include <sys/time.h> // gettimeofday
+#include<unistd.h> // usleep & write
+#include <limits.h>
+#include <stdbool.h>
+
+typedef struct s_philosopher {
+    int id;
+    int times_eaten;
+    long long last_meal_time;
+    pthread_t thread;
+    struct s_data *data;
+} t_philosopher;
+
+typedef struct s_data {
+    int num_philosophers;
+    int time_to_die;
+    int time_to_eat;
+    int time_to_sleep;
+    int meals_to_eat;
+    long long start_time;
+    int simulation_stop;
+    pthread_mutex_t stop_mutex;
+    pthread_mutex_t *forks;
+    pthread_mutex_t write_lock;
+    
+    t_philosopher *philosophers;
+} t_data;
+
+bool all_philosophers_ate_enough(t_data *data)
 {
-    t_program *program;
+    if (data->meals_to_eat == -1)
+        return false;
 
-    if(validate_input(ac, av) != 0)
-        return(EXIT_FAILURE);
-    // Initialize program structure with command line arguments
-    if (init_program(&program, ac, av) != 0)
+    for (int i = 0; i < data->num_philosophers; i++)
     {
-        printf("Error: Invalid arguments\n");
+        if (data->philosophers[i].times_eaten < data->meals_to_eat)
+            return false;
+    }
+    return true;
+}
+
+void cleanup(t_data *data)
+{
+    int i;
+
+    if (data->philosophers)
+    {
+        free(data->philosophers);
+        data->philosophers = NULL;
+    }
+
+    if (data->forks)
+    {
+        for (i = 0; i < data->num_philosophers; i++)
+            pthread_mutex_destroy(&data->forks[i]);
+        free(data->forks);
+        data->forks = NULL;
+    }
+
+    pthread_mutex_destroy(&data->write_lock);
+}
+long long get_current_time(void)
+{
+    struct timeval tv;
+    
+    if (gettimeofday(&tv, NULL) == -1)
+    {
+        printf("Error: gettimeofday failed\n");
+        return -1;
+    }
+    return (tv.tv_sec * 1000LL + tv.tv_usec / 1000);
+}
+
+void print_status(t_data *data, int id, char *status)
+{
+    pthread_mutex_lock(&data->stop_mutex);
+    if (!data->simulation_stop)
+    {
+        long long current_time = get_current_time();
+        pthread_mutex_lock(&data->write_lock);
+        printf("%lld %d %s\n", current_time - data->start_time, id, status);
+        pthread_mutex_unlock(&data->write_lock);
+    }
+    pthread_mutex_unlock(&data->stop_mutex);
+}
+
+bool check_philosopher_death(t_philosopher *philo, t_data *data)
+{
+    long long current_time = get_current_time();
+    long long time_since_last_meal = current_time - philo->last_meal_time;
+
+    if (time_since_last_meal > data->time_to_die)
+    {
+        pthread_mutex_lock(&data->stop_mutex);
+        if (!data->simulation_stop)
+        {
+            data->simulation_stop = 1;
+            pthread_mutex_unlock(&data->stop_mutex);
+            pthread_mutex_lock(&data->write_lock);
+            printf("%lld %d died\n", current_time - data->start_time, philo->id);
+            pthread_mutex_unlock(&data->write_lock);
+            return true;
+        }
+        pthread_mutex_unlock(&data->stop_mutex);
+    }
+    return false;
+}
+
+void *monitor_routine(void *arg)
+{
+    t_data *data = (t_data *)arg;
+    while (1)
+    {
+        for (int i = 0; i < data->num_philosophers; i++)
+        {
+            if (check_philosopher_death(&data->philosophers[i], data))
+                return NULL;
+        }
+        if (all_philosophers_ate_enough(data))
+        {
+            pthread_mutex_lock(&data->stop_mutex);
+            data->simulation_stop = 1;
+            pthread_mutex_unlock(&data->stop_mutex);
+            printf("All philosophers have eaten enough times\n");
+            return NULL;
+        }
+        usleep(1000);
+    }
+}
+
+void *philosopher_routine(void *arg)
+{
+    t_philosopher *philo = (t_philosopher *)arg;
+    t_data *data = philo->data;
+    int left_fork = philo->id - 1;
+    int right_fork = philo->id % data->num_philosophers;
+
+    while (1)
+    {
+        pthread_mutex_lock(&data->stop_mutex);
+        if (data->simulation_stop)
+        {
+            pthread_mutex_unlock(&data->stop_mutex);
+            break;
+        }
+        pthread_mutex_unlock(&data->stop_mutex);
+
+        // Think
+        print_status(data, philo->id, "is thinking");
+        
+        // Pick up forks
+        pthread_mutex_lock(&data->forks[left_fork]);
+        print_status(data, philo->id, "has taken a fork");
+        pthread_mutex_lock(&data->forks[right_fork]);
+        print_status(data, philo->id, "has taken a fork");
+        
+        // Eat
+        print_status(data, philo->id, "is eating");
+        philo->last_meal_time = get_current_time();
+        usleep(data->time_to_eat * 1000);
+        philo->times_eaten++;
+
+        // Put down forks
+        pthread_mutex_unlock(&data->forks[left_fork]);
+        pthread_mutex_unlock(&data->forks[right_fork]);
+        
+        // Sleep
+        print_status(data, philo->id, "is sleeping");
+        usleep(data->time_to_sleep * 1000);
+    }
+
+    return NULL;
+}
+
+int init_data(t_data *data, int argc, char **argv)
+{
+    if (argc < 5 || argc > 6)
+    {
+        printf("Error: Invalid number of arguments\n");
         return 1;
     }
 
-    // Allocate memory for philosophers and forks
-    program->philosophers = malloc(sizeof(t_philosopher) * program->num_philosophers);
-    program->philosopher_threads = malloc(sizeof(pthread_t) * program->num_philosophers);
-    program->forks = malloc(sizeof(pthread_mutex_t) * program->num_philosophers);
+    data->num_philosophers = atoi(argv[1]);
+    data->time_to_die = atoi(argv[2]);
+    data->time_to_eat = atoi(argv[3]);
+    data->time_to_sleep = atoi(argv[4]);
+    data->meals_to_eat = (argc == 6) ? atoi(argv[5]) : -1;
 
-    if (!program->philosophers || !program->philosopher_threads || !program->forks)
+    if (data->num_philosophers < 1 || data->time_to_die < 0 || 
+        data->time_to_eat < 0 || data->time_to_sleep < 0 ||
+        (argc == 6 && data->meals_to_eat < 0))
+    {
+        printf("Error: Invalid argument values\n");
+        return 1;
+    }
+
+    data->philosophers = malloc(sizeof(t_philosopher) * data->num_philosophers);
+    if (!data->philosophers)
     {
         printf("Error: Memory allocation failed\n");
-        cleanup_program(&program);
         return 1;
     }
 
-    // Start simulation
-    if (start_simulation(&program) != 0)
+    data->forks = malloc(sizeof(pthread_mutex_t) * data->num_philosophers);
+    if (!data->forks)
     {
-        printf("Error: Failed to start simulation\n");
-        cleanup_program(&program);
+        printf("Error: Memory allocation failed\n");
+        free(data->philosophers);
         return 1;
     }
 
-    // Wait for all threads to finish
-    for (int i = 0; i < program->num_philosophers; i++)
+    for (int i = 0; i < data->num_philosophers; i++)
     {
-        if (pthread_join(program->philosopher_threads[i], NULL) != 0)
+        if (pthread_mutex_init(&data->forks[i], NULL) != 0)
         {
-            printf("Error: Failed to join thread\n");
+            printf("Error: Mutex initialization failed\n");
+            // Clean up previously initialized mutexes
+            for (int j = 0; j < i; j++)
+                pthread_mutex_destroy(&data->forks[j]);
+            free(data->forks);
+            free(data->philosophers);
+            return 1;
         }
     }
 
-    // Cleanup
-    cleanup_program(&program);
+    if (pthread_mutex_init(&data->write_lock, NULL) != 0)
+    {
+        printf("Error: Write lock mutex initialization failed\n");
+        for (int i = 0; i < data->num_philosophers; i++)
+            pthread_mutex_destroy(&data->forks[i]);
+        free(data->forks);
+        free(data->philosophers);
+        return 1;
+    }
+
+    for (int i = 0; i < data->num_philosophers; i++)
+    {
+        data->philosophers[i].id = i + 1;
+        data->philosophers[i].times_eaten = 0;
+        data->philosophers[i].last_meal_time = get_current_time();
+        data->philosophers[i].data = data;
+    }
+
+    data->start_time = get_current_time();
+    data->simulation_stop = 0;
+    pthread_mutex_init(&data->stop_mutex, NULL);
 
     return 0;
-} */
+}
 
-void stop_simulation(t_program *program)
+int main(int argc, char **argv)
 {
-    for (int i = 0; i < program->num_philosophers; i++)
+    t_data data;
+    int i;
+    pthread_t monitor_thread;
+
+    if (init_data(&data, argc, argv) != 0)
+        return 1;
+    if (pthread_create(&monitor_thread, NULL, monitor_routine, &data) != 0)
     {
-        if (pthread_join(program->philosopher_threads[i], NULL) != 0)
+        printf("Error creating monitor thread\n");
+        cleanup(&data);
+        return 1;
+    }
+
+    // Create threads for philosophers
+    for (i = 0; i < data.num_philosophers; i++)
+    {
+        if (pthread_create(&data.philosophers[i].thread, NULL, philosopher_routine, &data.philosophers[i]) != 0)
         {
-            printf("Error: Failed to join philosopher thread\n");
+            printf("Error creating thread\n");
+            cleanup(&data);
+            return 1;
         }
     }
-    
-    if (pthread_join(*program->death_clock, NULL) != 0)
-    {
-        printf("Error: Failed to join monitor thread\n");
-    }
-}
 
-int    allocate_memory(t_program *program)
-{
-    printf("Allocating for %d philosophers\n", MAX_PHILOS);
-    // Allocate memory for philosophers and forks
-    program->philosophers = malloc(sizeof(t_philosopher) * MAX_PHILOS);
-    if (!program->philosophers)
+    // Join threads
+    // Join philosopher threads
+    for (i = 0; i < data.num_philosophers; i++)
     {
-        printf("Error: Memory allocation failed\n");
-       // cleanup_program(&program);
-        return 1;
+        if (pthread_join(data.philosophers[i].thread, NULL) != 0)
+        {
+            printf("Error joining thread\n");
+            cleanup(&data);
+            return 1;
+        }
     }
-    program->forks_mutex = malloc(sizeof(pthread_mutex_t) * MAX_PHILOS);
-if (program->forks_mutex == NULL) {
-    printf("Error: Memory allocation for forks_mutex failed\n");
-    return 1;
-}
-program->philosopher_threads = malloc(sizeof(pthread_t) * MAX_PHILOS);
-if (program->philosopher_threads == NULL) {
-    printf("Error: Memory allocation for philosopher threads failed\n");
-    free(program->forks_mutex);  // Free previously allocated memory
-    return 1;
-}
-return(0);
-}
 
-int main(int ac, char **av)
-{
-    t_program program;  // Changed from t_program *program 
-    
-    if(allocate_memory(&program) != 0)
-        return (EXIT_FAILURE);
-    if(validate_input(ac, av) != 0)
-        return(EXIT_FAILURE);
-    // Initialize program structure with command line arguments
-    if (init_program(&program, ac, av) != 0)
+    // Join monitor thread
+    if (pthread_join(monitor_thread, NULL) != 0)
     {
-        printf("Error: Invalid arguments\n");
+        printf("Error joining monitor thread\n");
+        cleanup(&data);
         return 1;
     }
 
-    // Start simulation
-    if (start_simulation(&program) != 0)
-    {
-        printf("Error: Failed to start simulation\n");
-        cleanup_program(&program);
-        return 1;
-    }
-   // join_threads(program);
-// Wait for monitor thread to finish
-    stop_simulation(&program);
-    // Cleanup
-    cleanup_program(&program);
-    free(program.forks_mutex);
-    free(program.philosopher_threads);
+    cleanup(&data);
+    return 0;
+
+    cleanup(&data);
     return 0;
 }
-
