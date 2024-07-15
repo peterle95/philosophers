@@ -6,7 +6,7 @@
 /*   By: pmolzer <pmolzer@student.42berlin.de>      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/07/11 13:55:31 by pmolzer           #+#    #+#             */
-/*   Updated: 2024/07/13 19:02:25 by pmolzer          ###   ########.fr       */
+/*   Updated: 2024/07/13 19:50:17 by pmolzer          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -105,10 +105,10 @@ int main(int ac, char **av)
     if (start_simulation(&program) != 0)
     {
         printf("Error: Failed to start simulation\n");
-      //  cleanup_program(&program);
+        cleanup_program(&program);
         return 1;
     }
-
+   // join_threads(program);
 // Wait for monitor thread to finish
 
 
@@ -121,8 +121,9 @@ int main(int ac, char **av)
         }
     }
     // Cleanup
-    // cleanup_program(&program);
+    cleanup_program(&program);
     free(program.forks);
     free(program.philosopher_threads);
     return 0;
 }
+
