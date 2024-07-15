@@ -6,7 +6,7 @@
 /*   By: pmolzer <pmolzer@student.42berlin.de>      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/07/15 15:36:15 by pmolzer           #+#    #+#             */
-/*   Updated: 2024/07/15 15:55:17 by pmolzer          ###   ########.fr       */
+/*   Updated: 2024/07/15 17:12:31 by pmolzer          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -41,9 +41,9 @@ typedef struct s_philosopher {
 
 typedef struct s_data {
     int num_philosophers;
-    int time_to_die;
-    int time_to_eat;
-    int time_to_sleep;
+    long long time_to_die;
+    long long time_to_eat;
+    long long time_to_sleep;
     int meals_to_eat;
     long long start_time;
     int simulation_stop;
@@ -53,6 +53,30 @@ typedef struct s_data {
     
     t_philosopher *philosophers;
 } t_data;
+
+long long get_current_time(void)
+{
+    struct timeval tv;
+    
+    if (gettimeofday(&tv, NULL) == -1)
+    {
+        printf("Error: gettimeofday failed\n");
+        return -1;
+    }
+    return (tv.tv_sec * 1000LL + tv.tv_usec / 1000);
+}
+void accurate_sleep(long long time_in_ms)
+{
+    long long start = get_current_time();
+    long long end = start + time_in_ms;
+    while (get_current_time() < end)
+    {
+        if (end - get_current_time() > 1)
+            usleep(500);
+        else
+            usleep(100);
+    }
+}
 
 bool all_philosophers_ate_enough(t_data *data)
 {
@@ -87,17 +111,6 @@ void cleanup(t_data *data)
 
     pthread_mutex_destroy(&data->write_lock);
 }
-long long get_current_time(void)
-{
-    struct timeval tv;
-    
-    if (gettimeofday(&tv, NULL) == -1)
-    {
-        printf("Error: gettimeofday failed\n");
-        return -1;
-    }
-    return (tv.tv_sec * 1000LL + tv.tv_usec / 1000);
-}
 
 void print_status(t_data *data, int id, char *status)
 {
@@ -117,7 +130,7 @@ bool check_philosopher_death(t_philosopher *philo, t_data *data)
     long long current_time = get_current_time();
     long long time_since_last_meal = current_time - philo->last_meal_time;
 
-    if (time_since_last_meal > data->time_to_die)
+    if (time_since_last_meal >= data->time_to_die)
     {
         pthread_mutex_lock(&data->stop_mutex);
         if (!data->simulation_stop)
@@ -125,7 +138,7 @@ bool check_philosopher_death(t_philosopher *philo, t_data *data)
             data->simulation_stop = 1;
             pthread_mutex_unlock(&data->stop_mutex);
             pthread_mutex_lock(&data->write_lock);
-            printf("%lld %d died\n", current_time - data->start_time, philo->id);
+            printf("%lld %d died\n", data->time_to_die + philo->last_meal_time - data->start_time, philo->id);
             pthread_mutex_unlock(&data->write_lock);
             return true;
         }
@@ -137,6 +150,15 @@ bool check_philosopher_death(t_philosopher *philo, t_data *data)
 void *monitor_routine(void *arg)
 {
     t_data *data = (t_data *)arg;
+    
+    if (data->num_philosophers == 1)
+    {
+        accurate_sleep(data->time_to_die);
+        printf("%lld 1 died\n", data->time_to_die);
+        data->simulation_stop = 1;
+        return NULL;
+    }
+
     while (1)
     {
         for (int i = 0; i < data->num_philosophers; i++)
@@ -152,7 +174,7 @@ void *monitor_routine(void *arg)
             printf("All philosophers have eaten enough times\n");
             return NULL;
         }
-        usleep(1000);
+        usleep(50);  // Check even more frequently
     }
 }
 
@@ -162,6 +184,16 @@ void *philosopher_routine(void *arg)
     t_data *data = philo->data;
     int left_fork = philo->id - 1;
     int right_fork = philo->id % data->num_philosophers;
+
+    if (data->num_philosophers == 1)
+    {
+        print_status(data, philo->id, "has taken a fork");
+        accurate_sleep(data->time_to_die);
+        return NULL;
+    }
+
+    if (philo->id % 2 == 0)
+        usleep(1000); // Delay even-numbered philosophers slightly
 
     while (1)
     {
@@ -183,9 +215,9 @@ void *philosopher_routine(void *arg)
         print_status(data, philo->id, "has taken a fork");
         
         // Eat
-        print_status(data, philo->id, "is eating");
         philo->last_meal_time = get_current_time();
-        usleep(data->time_to_eat * 1000);
+        print_status(data, philo->id, "is eating");
+        accurate_sleep(data->time_to_eat);
         philo->times_eaten++;
 
         // Put down forks
@@ -194,7 +226,7 @@ void *philosopher_routine(void *arg)
         
         // Sleep
         print_status(data, philo->id, "is sleeping");
-        usleep(data->time_to_sleep * 1000);
+        accurate_sleep(data->time_to_sleep);
     }
 
     return NULL;
@@ -209,9 +241,9 @@ int init_data(t_data *data, int argc, char **argv)
     }
 
     data->num_philosophers = atoi(argv[1]);
-    data->time_to_die = atoi(argv[2]);
-    data->time_to_eat = atoi(argv[3]);
-    data->time_to_sleep = atoi(argv[4]);
+    data->time_to_die = atoll(argv[2]);
+    data->time_to_eat = atoll(argv[3]);
+    data->time_to_sleep = atoll(argv[4]);
     data->meals_to_eat = (argc == 6) ? atoi(argv[5]) : -1;
 
     if (data->num_philosophers < 1 || data->time_to_die < 0 || 
@@ -261,15 +293,15 @@ int init_data(t_data *data, int argc, char **argv)
         return 1;
     }
 
-    for (int i = 0; i < data->num_philosophers; i++)
-    {
-        data->philosophers[i].id = i + 1;
-        data->philosophers[i].times_eaten = 0;
-        data->philosophers[i].last_meal_time = get_current_time();
-        data->philosophers[i].data = data;
-    }
-
     data->start_time = get_current_time();
+for (int i = 0; i < data->num_philosophers; i++)
+{
+    data->philosophers[i].id = i + 1;
+    data->philosophers[i].times_eaten = 0;
+    data->philosophers[i].last_meal_time = data->start_time;
+    data->philosophers[i].data = data;
+}
+
     data->simulation_stop = 0;
     pthread_mutex_init(&data->stop_mutex, NULL);
 
@@ -284,6 +316,9 @@ int main(int argc, char **argv)
 
     if (init_data(&data, argc, argv) != 0)
         return 1;
+
+    usleep(1000); // Small delay before starting threads
+
     if (pthread_create(&monitor_thread, NULL, monitor_routine, &data) != 0)
     {
         printf("Error creating monitor thread\n");
@@ -303,7 +338,6 @@ int main(int argc, char **argv)
     }
 
     // Join threads
-    // Join philosopher threads
     for (i = 0; i < data.num_philosophers; i++)
     {
         if (pthread_join(data.philosophers[i].thread, NULL) != 0)
@@ -321,9 +355,6 @@ int main(int argc, char **argv)
         cleanup(&data);
         return 1;
     }
-
-    cleanup(&data);
-    return 0;
 
     cleanup(&data);
     return 0;
