@@ -6,7 +6,7 @@
 /*   By: pmolzer <pmolzer@student.42berlin.de>      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/07/11 13:54:04 by pmolzer           #+#    #+#             */
-/*   Updated: 2024/07/16 20:32:50 by pmolzer          ###   ########.fr       */
+/*   Updated: 2024/07/16 23:52:09 by pmolzer          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -47,12 +47,19 @@ typedef struct s_data {
 
 // Utils
 long long get_current_time(void);
-void accurate_sleep(long long time_in_ms);
 void print_status(t_data *data, int id, char *status);
 long long ft_atoll(const char *str);
+void set_simulation_stop(t_data *data);
 
 // Cleanup
 void cleanup(t_data *data);
+
+// Check
+int check_philosopher_deaths(t_data *data);
+int check_all_philosophers_ate_enough(t_data *data);
+
+// Threads
+int create_and_run_threads(t_data *data);
 
 // Init
 int init_data(t_data *data, int argc, char **argv);
@@ -63,11 +70,18 @@ void *philosopher_routine(void *arg);
 // Death Clock
 bool death_clock(t_philosopher *philo, t_data *data);
 void *monitor_routine(void *arg);
+bool all_philosophers_ate_enough(t_data *data);
 
 // Validate Input
 int validate_input(int argc, char **argv);
 
 // Memory Allocation
 int allocate_memory(t_data *data);
+
+// Eat Think And Sleep
+void accurate_sleep(long long time_in_ms);
+void release_forks_and_sleep(t_philosopher *philo, t_data *data, int left_fork, int right_fork);
+void think_and_take_forks(t_philosopher *philo, t_data *data, int left_fork, int right_fork);
+void eat(t_philosopher *philo, t_data *data);
 
 #endif

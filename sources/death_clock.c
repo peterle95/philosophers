@@ -6,7 +6,7 @@
 /*   By: pmolzer <pmolzer@student.42berlin.de>      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/07/16 19:15:29 by pmolzer           #+#    #+#             */
-/*   Updated: 2024/07/16 19:17:07 by pmolzer          ###   ########.fr       */
+/*   Updated: 2024/07/16 23:50:43 by pmolzer          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -25,34 +25,32 @@ bool all_philosophers_ate_enough(t_data *data)
     return true;
 }
 
+void handle_single_philosopher_monitor(t_data *data)
+{
+    accurate_sleep(data->time_to_die);
+    printf("%lld 1 died\n", data->time_to_die);
+    data->simulation_stop = 1;
+}
+
 void *monitor_routine(void *arg)
 {
     t_data *data = (t_data *)arg;
     
     if (data->num_philosophers == 1)
     {
-        accurate_sleep(data->time_to_die);
-        printf("%lld 1 died\n", data->time_to_die);
-        data->simulation_stop = 1;
+        handle_single_philosopher_monitor(data);
         return NULL;
     }
 
     while (1)
     {
-        for (int i = 0; i < data->num_philosophers; i++)
-        {
-            if (death_clock(&data->philosophers[i], data))
-                return NULL;
-        }
-        if (all_philosophers_ate_enough(data))
-        {
-            pthread_mutex_lock(&data->stop_mutex);
-            data->simulation_stop = 1;
-            pthread_mutex_unlock(&data->stop_mutex);
-            printf("All philosophers have eaten enough times\n");
+        if (check_philosopher_deaths(data))
             return NULL;
-        }
-        usleep(50);  // Check even more frequently
+        
+        if (check_all_philosophers_ate_enough(data))
+            return NULL;
+        
+        usleep(50);  // Check frequently
     }
 }
 

@@ -1,38 +1,34 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   main.c                                             :+:      :+:    :+:   */
+/*   check.c                                            :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: pmolzer <pmolzer@student.42berlin.de>      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2024/07/15 15:36:15 by pmolzer           #+#    #+#             */
-/*   Updated: 2024/07/16 23:48:05 by pmolzer          ###   ########.fr       */
+/*   Created: 2024/07/16 23:50:04 by pmolzer           #+#    #+#             */
+/*   Updated: 2024/07/16 23:50:49 by pmolzer          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "../includes/philo.h"
 
-int run_simulation(int argc, char **argv)
+int check_philosopher_deaths(t_data *data)
 {
-    t_data data;
-
-    if (init_data(&data, argc, argv) != 0)
-        return 1;
-
-    if (create_and_run_threads(&data) != 0)
+    for (int i = 0; i < data->num_philosophers; i++)
     {
-        cleanup(&data);
-        return 1;
+        if (death_clock(&data->philosophers[i], data))
+            return 1;
     }
-
-    cleanup(&data);
     return 0;
 }
 
-int main(int argc, char **argv)
+int check_all_philosophers_ate_enough(t_data *data)
 {
-    if (validate_input(argc, argv) != 0)
-        return EXIT_FAILURE;
-
-    return run_simulation(argc, argv) == 0 ? EXIT_SUCCESS : EXIT_FAILURE;
+    if (all_philosophers_ate_enough(data))
+    {
+        set_simulation_stop(data);
+        printf("All philosophers have eaten enough times\n");
+        return 1;
+    }
+    return 0;
 }

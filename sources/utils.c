@@ -6,7 +6,7 @@
 /*   By: pmolzer <pmolzer@student.42berlin.de>      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/07/16 19:03:05 by pmolzer           #+#    #+#             */
-/*   Updated: 2024/07/16 19:29:31 by pmolzer          ###   ########.fr       */
+/*   Updated: 2024/07/16 23:49:26 by pmolzer          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -62,15 +62,9 @@ void print_status(t_data *data, int id, char *status)
     pthread_mutex_unlock(&data->stop_mutex);
 }
 
-void accurate_sleep(long long time_in_ms)
+void set_simulation_stop(t_data *data)
 {
-    long long start = get_current_time();
-    long long end = start + time_in_ms;
-    while (get_current_time() < end)
-    {
-        if (end - get_current_time() > 1)
-            usleep(500);
-        else
-            usleep(100);
-    }
+    pthread_mutex_lock(&data->stop_mutex);
+    data->simulation_stop = 1;
+    pthread_mutex_unlock(&data->stop_mutex);
 }

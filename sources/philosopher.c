@@ -6,11 +6,32 @@
 /*   By: pmolzer <pmolzer@student.42berlin.de>      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/07/16 19:08:49 by pmolzer           #+#    #+#             */
-/*   Updated: 2024/07/16 19:09:28 by pmolzer          ###   ########.fr       */
+/*   Updated: 2024/07/16 23:47:12 by pmolzer          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "../includes/philo.h"
+
+void handle_single_philosopher(t_philosopher *philo, t_data *data)
+{
+    print_status(data, philo->id, "has taken a fork");
+    accurate_sleep(data->time_to_die);
+}
+
+void introduce_delay(t_philosopher *philo, t_data *data)
+{
+    if (philo->id % 2 == 0)
+        usleep(data->time_to_eat * 500);
+}
+
+int check_simulation_stop(t_data *data)
+{
+    int stop;
+    pthread_mutex_lock(&data->stop_mutex);
+    stop = data->simulation_stop;
+    pthread_mutex_unlock(&data->stop_mutex);
+    return stop;
+}
 
 void *philosopher_routine(void *arg)
 {
@@ -21,47 +42,17 @@ void *philosopher_routine(void *arg)
 
     if (data->num_philosophers == 1)
     {
-        print_status(data, philo->id, "has taken a fork");
-        accurate_sleep(data->time_to_die);
+        handle_single_philosopher(philo, data);
         return NULL;
     }
 
-    // Introduce a more significant delay for even-numbered philosophers
-    if (philo->id % 2 == 0)
-        usleep(data->time_to_eat * 500);  // Half of time_to_eat in microseconds
+    introduce_delay(philo, data);
 
-    while (1)
+    while (!check_simulation_stop(data))
     {
-        pthread_mutex_lock(&data->stop_mutex);
-        if (data->simulation_stop)
-        {
-            pthread_mutex_unlock(&data->stop_mutex);
-            break;
-        }
-        pthread_mutex_unlock(&data->stop_mutex);
-
-        // Think
-        print_status(data, philo->id, "is thinking");
-        
-        // Pick up forks
-        pthread_mutex_lock(&data->forks[left_fork]);
-        print_status(data, philo->id, "has taken a fork");
-        pthread_mutex_lock(&data->forks[right_fork]);
-        print_status(data, philo->id, "has taken a fork");
-        
-        // Eat
-        philo->last_meal_time = get_current_time();
-        print_status(data, philo->id, "is eating");
-        accurate_sleep(data->time_to_eat);
-        philo->times_eaten++;
-
-        // Put down forks
-        pthread_mutex_unlock(&data->forks[left_fork]);
-        pthread_mutex_unlock(&data->forks[right_fork]);
-        
-        // Sleep
-        print_status(data, philo->id, "is sleeping");
-        accurate_sleep(data->time_to_sleep);
+        think_and_take_forks(philo, data, left_fork, right_fork);
+        eat(philo, data);
+        release_forks_and_sleep(philo, data, left_fork, right_fork);
     }
 
     return NULL;
