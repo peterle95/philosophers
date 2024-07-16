@@ -6,7 +6,7 @@
 /*   By: pmolzer <pmolzer@student.42berlin.de>      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/07/11 13:54:04 by pmolzer           #+#    #+#             */
-/*   Updated: 2024/07/16 19:29:45 by pmolzer          ###   ########.fr       */
+/*   Updated: 2024/07/16 20:32:50 by pmolzer          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -66,5 +66,8 @@ void *monitor_routine(void *arg);
 
 // Validate Input
 int validate_input(int argc, char **argv);
+
+// Memory Allocation
+int allocate_memory(t_data *data);
 
 #endif
