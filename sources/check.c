@@ -12,23 +12,27 @@
 
 #include "../includes/philo.h"
 
-int check_philosopher_deaths(t_data *data)
+int	check_philosopher_deaths(t_data *data)
 {
-    for (int i = 0; i < data->num_philosophers; i++)
-    {
-        if (death_clock(&data->philosophers[i], data))
-            return 1;
-    }
-    return 0;
+	int		i;
+
+	i = 0;
+	while (i < data->num_philosophers)
+	{
+		if (death_clock(&data->philosophers[i], data))
+		return (1);
+		i++;
+	}
+	return (0);
 }
 
-int check_all_philosophers_ate_enough(t_data *data)
+int	check_all_philosophers_ate_enough(t_data *data)
 {
-    if (all_philosophers_ate_enough(data))
-    {
-        set_simulation_stop(data);
-        printf("All philosophers have eaten enough times\n");
-        return 1;
-    }
-    return 0;
+	if (all_philosophers_ate_enough(data))
+	{
+		set_simulation_stop(data);
+		// printf("All philosophers have eaten enough times\n");
+		return (1);
+	}
+	return (0);
 }

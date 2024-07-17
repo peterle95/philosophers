@@ -24,32 +24,32 @@
 
 typedef struct s_philosopher
 {
-	int		id;
-	int		times_eaten;
-	long long	last_meal_time;
-	pthread_t	thread;
+	int				id;
+	int				times_eaten;
+	long			last_meal_time;
+	pthread_t		thread;
 	struct s_data	*data;
-}		t_philosopher;
+}	t_philosopher;
 
-typedef struct	s_data
+typedef struct s_data
 {
 	int		num_philosophers;
-	long long	time_to_die;
-	long long	time_to_eat;
-	long long	time_to_sleep;
+	long	time_to_die;
+	long	time_to_eat;
+	long	time_to_sleep;
 	int		meals_to_eat;
-	long long	start_time;
+	long	start_time;
 	int		simulation_stop;
-	pthread_mutex_t	stop_mutex;
-	pthread_mutex_t	*forks;
-	pthread_mutex_t	write_lock;
-	t_philosopher *philosophers;
-}		t_data;
+	pthread_mutex_t		stop_mutex;
+	pthread_mutex_t		*forks;
+	pthread_mutex_t		write_lock;
+	t_philosopher	*philosophers;
+}	t_data;
 
 // Utils
-long long	get_current_time(void);
+long	get_current_time(void);
 void	print_status(t_data *data, int id, char *status);
-long long	ft_atoll(const char *str);
+long	ft_atoll(const char *str);
 void	set_simulation_stop(t_data *data);
 
 // Cleanup
@@ -66,7 +66,7 @@ int		create_and_run_threads(t_data *data);
 int		init_data(t_data *data, int argc, char **argv);
 
 // Philosopher
-void		*philosopher_routine(void *arg);
+void	*philosopher_routine(void *arg);
 
 // Death Clock
 bool	death_clock(t_philosopher *philo, t_data *data);
@@ -81,8 +81,10 @@ int		allocate_memory(t_data *data);
 
 // Eat Think And Sleep
 void	accurate_sleep(long long time_in_ms);
-void	release_forks_and_sleep(t_philosopher *philo, t_data *data, int left_fork, int right_fork);
-void	think_and_take_forks(t_philosopher *philo, t_data *data, int left_fork, int right_fork);
+void	release_forks_and_sleep(t_philosopher *philo, t_data *data,
+			int left_fork, int right_fork);
+void	think_and_take_forks(t_philosopher *philo, t_data *data,
+			int left_fork, int right_fork);
 void	eat(t_philosopher *philo, t_data *data);
 
 #endif

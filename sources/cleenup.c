@@ -12,23 +12,25 @@
 
 #include "../includes/philo.h"
 
-void cleanup(t_data *data)
+void	cleanup(t_data *data)
 {
-    int i;
+	int		i;
 
-    if (data->philosophers)
-    {
-        free(data->philosophers);
-        data->philosophers = NULL;
-    }
-
-    if (data->forks)
-    {
-        for (i = 0; i < data->num_philosophers; i++)
-            pthread_mutex_destroy(&data->forks[i]);
-        free(data->forks);
-        data->forks = NULL;
-    }
-
-    pthread_mutex_destroy(&data->write_lock);
+	i = 0;
+	if (data->philosophers)
+	{
+		free(data->philosophers);
+		data->philosophers = NULL;
+	}
+	if (data->forks)
+	{
+		while (i < data->num_philosophers)
+		{
+			pthread_mutex_destroy(&data->forks[i]);
+			i++;
+		}
+		free(data->forks);
+		data->forks = NULL;
+	}
+	pthread_mutex_destroy(&data->write_lock);
 }

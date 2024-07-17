@@ -12,27 +12,24 @@
 
 #include "../includes/philo.h"
 
-int run_simulation(int argc, char **argv)
+int	run_simulation(int argc, char **argv)
 {
-    t_data data;
+	t_data	data;
 
-    if (init_data(&data, argc, argv) != 0)
-        return 1;
-
-    if (create_and_run_threads(&data) != 0)
-    {
-        cleanup(&data);
-        return 1;
-    }
-
-    cleanup(&data);
-    return 0;
+	if (init_data(&data, argc, argv) != 0)
+		return (1);
+	if (create_and_run_threads(&data) != 0)
+	{
+		cleanup(&data);
+		return (1);
+	}
+	cleanup(&data);
+	return (0);
 }
 
-int main(int argc, char **argv)
+int	main(int argc, char **argv)
 {
-    if (validate_input(argc, argv) != 0)
-        return EXIT_FAILURE;
-
-    return run_simulation(argc, argv) == 0 ? EXIT_SUCCESS : EXIT_FAILURE;
+	if (validate_input(argc, argv) != 0)
+		return (EXIT_FAILURE);
+	return (run_simulation(argc, argv) == 0 ? EXIT_SUCCESS : EXIT_FAILURE);
 }
