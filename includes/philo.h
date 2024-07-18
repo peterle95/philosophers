@@ -33,16 +33,16 @@ typedef struct s_philosopher
 
 typedef struct s_data
 {
-	int		num_philosophers;
-	long	time_to_die;
-	long	time_to_eat;
-	long	time_to_sleep;
-	int		meals_to_eat;
-	long	start_time;
-	int		simulation_stop;
-	pthread_mutex_t		stop_mutex;
-	pthread_mutex_t		*forks;
-	pthread_mutex_t		write_lock;
+	pthread_mutex_t	stop_mutex;
+	pthread_mutex_t	*forks;
+	pthread_mutex_t	write_lock;
+	int				num_philosophers;
+	int				meals_to_eat;
+	int				simulation_stop;
+	long			time_to_die;
+	long			time_to_eat;
+	long			time_to_sleep;
+	long			start_time;
 	t_philosopher	*philosophers;
 }	t_data;
 
