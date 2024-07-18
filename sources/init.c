@@ -29,40 +29,13 @@ int	parse_arguments(t_data *data, int argc, char **argv)
 	return (0);
 }
 
-// more than 25 lines
 int	initialize_mutexes(t_data *data)
 {
-	int		i;
-	int		j;
-
-	i = 0;
-	while (i < data->num_philosophers)
-	{
-		if (pthread_mutex_init(&data->forks[i], NULL) != 0)
-		{
-			printf("Error: Mutex initialization failed\n");
-			j = 0;
-			while (j < i)
-			{
-				pthread_mutex_destroy(&data->forks[j]);
-				j++;
-			}
-			return (1);
-		}
-		i++;
-	}
-	if (pthread_mutex_init(&data->write_lock, NULL) != 0)
-	{
-		printf("Error: Write lock mutex initialization failed\n");
-		i = 0;
-		while (i < data->num_philosophers)
-		{
-			pthread_mutex_destroy(&data->forks[i]);
-			i++;
-		}
+	if (initialize_fork_mutexes(data) != 0)
 		return (1);
-	}
-	return (pthread_mutex_init(&data->stop_mutex, NULL));
+	if (initialize_write_lock(data) != 0)
+		return (1);
+	return (initialize_stop_mutex(data));
 }
 
 void	initialize_philosophers(t_data *data)

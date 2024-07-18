@@ -87,4 +87,10 @@ void	think_and_take_forks(t_philosopher *philo, t_data *data,
 			int left_fork, int right_fork);
 void	eat(t_philosopher *philo, t_data *data);
 
+// Mutexes
+int initialize_stop_mutex(t_data *data);
+int initialize_write_lock(t_data *data);
+void destroy_fork_mutexes(t_data *data, int num_to_destroy);
+int initialize_fork_mutexes(t_data *data);
+
 #endif
