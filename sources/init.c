@@ -53,8 +53,12 @@ int	initialize_mutexes(t_data *data)
 	if (pthread_mutex_init(&data->write_lock, NULL) != 0)
 	{
 		printf("Error: Write lock mutex initialization failed\n");
-	for (int i = 0; i < data->num_philosophers; i++)
-		pthread_mutex_destroy(&data->forks[i]);
+		i = 0;
+		while (i < data->num_philosophers)
+		{	
+			pthread_mutex_destroy(&data->forks[i]);
+			i++;
+		}
 	return (1);
 	}
 	return (pthread_mutex_init(&data->stop_mutex, NULL));
@@ -62,12 +66,17 @@ int	initialize_mutexes(t_data *data)
 
 void	initialize_philosophers(t_data *data)
 {
+	int i;
+
+	i = 0;
 	data->start_time = get_current_time();
-	for (int i = 0; i < data->num_philosophers; i++)
+	while (i < data->num_philosophers)
 	{
 		data->philosophers[i].id = i + 1;
 		data->philosophers[i].times_eaten = 0;
-		data->philosophers[i].last_meal_time = data->start_time;		data->philosophers[i].data = data;
+		data->philosophers[i].last_meal_time = data->start_time;		
+		data->philosophers[i].data = data;
+		i++;
 	}
 	data->simulation_stop = 0;
 }

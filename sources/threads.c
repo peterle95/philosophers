@@ -14,15 +14,19 @@
 
 int	create_philosopher_threads(t_data *data)
 {
-    for (int i = 0; i < data->num_philosophers; i++)
+	int i;
+
+	i = 0;
+    while (i < data->num_philosophers)
     {
         if (pthread_create(&data->philosophers[i].thread, NULL, philosopher_routine, &data->philosophers[i]) != 0)
         {
             printf("Error creating thread\n");
             return 1;
         }
+		i++;
     }
-    return 0;
+    return (0);
 }
 
 int	create_monitor_thread(t_data *data, pthread_t *monitor_thread)
@@ -37,15 +41,18 @@ int	create_monitor_thread(t_data *data, pthread_t *monitor_thread)
 
 int	join_philosopher_threads(t_data *data)
 {
-    for (int i = 0; i < data->num_philosophers; i++)
+	int i;
+	i = 0;
+    while (i < data->num_philosophers)
     {
         if (pthread_join(data->philosophers[i].thread, NULL) != 0)
         {
             printf("Error joining thread\n");
             return 1;
         }
+	i++;
     }
-    return 0;
+    return (0);
 }
 int	create_and_run_threads(t_data *data)
 {
