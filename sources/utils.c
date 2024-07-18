@@ -27,7 +27,6 @@ long	ft_atoll(const char *str)
 		sign = -1;
 		i++;
 	}
-
     // Convert string to long long
 	while (str[i] != '\0')
 	{
@@ -41,8 +40,8 @@ long	ft_atoll(const char *str)
 
 long	get_current_time(void)
 {
-	struct timeval tv;
-    
+	struct timeval	tv;
+
 	if (gettimeofday(&tv, NULL) == -1)
 	{
 		printf("Error: gettimeofday failed\n");

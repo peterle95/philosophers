@@ -31,5 +31,7 @@ int	main(int argc, char **argv)
 {
 	if (validate_input(argc, argv) != 0)
 		return (EXIT_FAILURE);
-	return (run_simulation(argc, argv) == 0 ? EXIT_SUCCESS : EXIT_FAILURE);
+	if (run_simulation(argc, argv) != 0)
+		return (EXIT_FAILURE);
+	return (0);
 }

@@ -26,7 +26,7 @@ void	introduce_delay(t_philosopher *philo, t_data *data)
 
 int	check_simulation_stop(t_data *data)
 {
-	int stop;
+	int		stop;
 
 	pthread_mutex_lock(&data->stop_mutex);
 	stop = data->simulation_stop;
@@ -36,11 +36,13 @@ int	check_simulation_stop(t_data *data)
 
 void	*philosopher_routine(void *arg)
 {
-	int		left_fork;
-	int		right_fork;
+	t_philosopher		*philo;
+	int					left_fork;
+	int					right_fork;
+	t_data				*data;
 
-	t_philosopher *philo = (t_philosopher *)arg;
-	t_data *data = philo->data;
+	philo = (t_philosopher *)arg;
+	data = philo->data;
 	left_fork = philo->id - 1;
 	right_fork = philo->id % data->num_philosophers;
 	if (data->num_philosophers == 1)

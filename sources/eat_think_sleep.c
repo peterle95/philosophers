@@ -28,7 +28,8 @@ void	accurate_sleep(long long time_in_ms)
 	}
 }
 
-void	think_and_take_forks(t_philosopher *philo, t_data *data, int left_fork, int right_fork)
+void	think_and_take_forks(t_philosopher *philo, t_data *data,
+				int left_fork, int right_fork)
 {
 	print_status(data, philo->id, "is thinking");
 	pthread_mutex_lock(&data->forks[left_fork]);
@@ -45,7 +46,8 @@ void	eat(t_philosopher *philo, t_data *data)
 	philo->times_eaten++;
 }
 
-void	release_forks_and_sleep(t_philosopher *philo, t_data *data, int left_fork, int right_fork)
+void	release_forks_and_sleep(t_philosopher *philo, t_data *data,
+				int left_fork, int right_fork)
 {
 	pthread_mutex_unlock(&data->forks[left_fork]);
 	pthread_mutex_unlock(&data->forks[right_fork]);

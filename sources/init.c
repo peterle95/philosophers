@@ -18,10 +18,10 @@ int	parse_arguments(t_data *data, int argc, char **argv)
 	data->time_to_die = ft_atoll(argv[2]);
 	data->time_to_eat = ft_atoll(argv[3]);
 	data->time_to_sleep = ft_atoll(argv[4]);
-	data->meals_to_eat = (argc == 6) ? atoi(argv[5]) : -1;
-	if (data->num_philosophers < 1 || data->time_to_die < 0 || 
-	data->time_to_eat < 0 || data->time_to_sleep < 0 ||
-	(argc == 6 && data->meals_to_eat < 0))
+	data->meals_to_eat = (argc == 6) ? atoi(argv[5]) : -1; // forbidden
+	if (data->num_philosophers < 1 || data->time_to_die
+		< 0 || data->time_to_eat < 0 || data->time_to_sleep
+		< 0 || (argc == 6 && data->meals_to_eat < 0))
 	{
 		printf("Error: Invalid argument values\n");
 		return (1);
@@ -29,6 +29,7 @@ int	parse_arguments(t_data *data, int argc, char **argv)
 	return (0);
 }
 
+// more than 25 lines
 int	initialize_mutexes(t_data *data)
 {
 	int		i;
@@ -48,25 +49,25 @@ int	initialize_mutexes(t_data *data)
 			}
 			return (1);
 		}
-	i++;
+		i++;
 	}
 	if (pthread_mutex_init(&data->write_lock, NULL) != 0)
 	{
 		printf("Error: Write lock mutex initialization failed\n");
 		i = 0;
 		while (i < data->num_philosophers)
-		{	
+		{
 			pthread_mutex_destroy(&data->forks[i]);
 			i++;
 		}
-	return (1);
+		return (1);
 	}
 	return (pthread_mutex_init(&data->stop_mutex, NULL));
 }
 
 void	initialize_philosophers(t_data *data)
 {
-	int i;
+	int		i;
 
 	i = 0;
 	data->start_time = get_current_time();
@@ -74,7 +75,7 @@ void	initialize_philosophers(t_data *data)
 	{
 		data->philosophers[i].id = i + 1;
 		data->philosophers[i].times_eaten = 0;
-		data->philosophers[i].last_meal_time = data->start_time;		
+		data->philosophers[i].last_meal_time = data->start_time;
 		data->philosophers[i].data = data;
 		i++;
 	}
