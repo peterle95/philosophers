@@ -21,7 +21,7 @@ long	ft_atoll(const char *str)
 	result = 0;
 	sign = 1;
 	i = 0;
-    // Handle negative numbers
+	// Handle negative numbers
 	if (str[0] == '-')
 	{
 		sign = -1;

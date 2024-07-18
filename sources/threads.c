@@ -12,7 +12,7 @@
 
 #include "../includes/philo.h"
 
-int create_philosopher_threads(t_data *data)
+int	create_philosopher_threads(t_data *data)
 {
     for (int i = 0; i < data->num_philosophers; i++)
     {
@@ -25,17 +25,17 @@ int create_philosopher_threads(t_data *data)
     return 0;
 }
 
-int create_monitor_thread(t_data *data, pthread_t *monitor_thread)
+int	create_monitor_thread(t_data *data, pthread_t *monitor_thread)
 {
-    if (pthread_create(monitor_thread, NULL, monitor_routine, data) != 0)
-    {
-        printf("Error creating monitor thread\n");
-        return 1;
-    }
-    return 0;
+	if (pthread_create(monitor_thread, NULL, monitor_routine, data) != 0)
+	{
+		printf("Error creating monitor thread\n");
+		return (1);
+	}
+	return (0);
 }
 
-int join_philosopher_threads(t_data *data)
+int	join_philosopher_threads(t_data *data)
 {
     for (int i = 0; i < data->num_philosophers; i++)
     {
@@ -47,22 +47,22 @@ int join_philosopher_threads(t_data *data)
     }
     return 0;
 }
-int create_and_run_threads(t_data *data)
+int	create_and_run_threads(t_data *data)
 {
-    pthread_t monitor_thread;
+	pthread_t monitor_thread;
 
-    if (create_philosopher_threads(data) != 0)
-        return 1;
-    usleep(1000);
-    data->start_time = get_current_time();
-    if (create_monitor_thread(data, &monitor_thread) != 0)
-        return 1;
-    if (join_philosopher_threads(data) != 0)
-        return 1;
-    if (pthread_join(monitor_thread, NULL) != 0)
-    {
-        printf("Error joining monitor thread\n");
-        return 1;
-    }
-    return 0;
+	if (create_philosopher_threads(data) != 0)
+		return (1);
+	usleep(1000);
+	data->start_time = get_current_time();
+	if (create_monitor_thread(data, &monitor_thread) != 0)
+		return (1);
+	if (join_philosopher_threads(data) != 0)
+		return (1);
+	if (pthread_join(monitor_thread, NULL) != 0)
+	{
+		printf("Error joining monitor thread\n");
+		return (1);
+	}
+	return (0);
 }

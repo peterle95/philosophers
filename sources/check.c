@@ -20,7 +20,7 @@ int	check_philosopher_deaths(t_data *data)
 	while (i < data->num_philosophers)
 	{
 		if (death_clock(&data->philosophers[i], data))
-		return (1);
+			return (1);
 		i++;
 	}
 	return (0);
