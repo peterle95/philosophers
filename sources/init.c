@@ -6,7 +6,7 @@
 /*   By: pmolzer <pmolzer@student.42berlin.de>      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/07/16 19:07:27 by pmolzer           #+#    #+#             */
-/*   Updated: 2024/07/16 20:32:03 by pmolzer          ###   ########.fr       */
+/*   Updated: 2024/07/31 14:02:49 by pmolzer          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -18,7 +18,8 @@ int	parse_arguments(t_data *data, int argc, char **argv)
 	data->time_to_die = ft_atoll(argv[2]);
 	data->time_to_eat = ft_atoll(argv[3]);
 	data->time_to_sleep = ft_atoll(argv[4]);
-	data->meals_to_eat = (argc == 6) ? atoi(argv[5]) : -1; // forbidden
+	if (argc == 6)
+		data->meals_to_eat = atoi(argv[5]);
 	if (data->num_philosophers < 1 || data->time_to_die
 		< 0 || data->time_to_eat < 0 || data->time_to_sleep
 		< 0 || (argc == 6 && data->meals_to_eat < 0))
@@ -35,7 +36,9 @@ int	initialize_mutexes(t_data *data)
 		return (1);
 	if (initialize_write_lock(data) != 0)
 		return (1);
-	return (initialize_stop_mutex(data));
+	if (initialize_stop_mutex(data) != 0)
+		return(1);
+	return (0);
 }
 
 void	initialize_philosophers(t_data *data)
