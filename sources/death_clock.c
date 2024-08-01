@@ -61,6 +61,8 @@ bool	death_clock(t_philosopher *philo, t_data *data)
 	long	time_since_last_meal;
 	long	death_time;
 
+	// check with debugg info, when philo threads start and when death_clock start --> delay function
+	// (necessary? Because the time_since_last_meal calculates the difference of current_time and the last meal time)
 	current_time = get_current_time();
 	time_since_last_meal = current_time - philo->last_meal_time;
 	if (time_since_last_meal > data->time_to_die)
