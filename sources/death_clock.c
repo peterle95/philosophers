@@ -6,7 +6,7 @@
 /*   By: pmolzer <pmolzer@student.42berlin.de>      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/07/16 19:15:29 by pmolzer           #+#    #+#             */
-/*   Updated: 2024/07/16 23:50:43 by pmolzer          ###   ########.fr       */
+/*   Updated: 2024/08/01 10:58:14 by pmolzer          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -31,7 +31,7 @@ bool	all_philosophers_ate_enough(t_data *data)
 void	handle_single_philosopher_monitor(t_data *data)
 {
 	accurate_sleep(data->time_to_die);
-	printf("%ld 1 died\n", data->time_to_die);
+	printf("%lld 1 died\n", data->time_to_die);
 	data->simulation_stop = 1;
 }
 
@@ -72,7 +72,7 @@ bool	death_clock(t_philosopher *philo, t_data *data)
 			death_time = philo->last_meal_time + data->time_to_die;
 			pthread_mutex_unlock(&data->stop_mutex);
 			pthread_mutex_lock(&data->write_lock);
-			printf("%ld %d died\n", death_time - data->start_time, philo->id);
+			printf("%lld %d died\n", death_time - data->start_time, philo->id);
 			pthread_mutex_unlock(&data->write_lock);
 			return (true);
 		}

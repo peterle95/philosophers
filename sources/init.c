@@ -6,7 +6,7 @@
 /*   By: pmolzer <pmolzer@student.42berlin.de>      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/07/16 19:07:27 by pmolzer           #+#    #+#             */
-/*   Updated: 2024/07/31 14:02:49 by pmolzer          ###   ########.fr       */
+/*   Updated: 2024/08/01 10:58:42 by pmolzer          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -49,10 +49,18 @@ void	initialize_philosophers(t_data *data)
 	data->start_time = get_current_time();
 	while (i < data->num_philosophers)
 	{
+		/*So when accessing fields, when do we use dot and when do we use arrow?
+			• If you have a struct, use dot (.).
+			• If you have a pointer to a struct, use arrow (->).
+		*/
 		data->philosophers[i].id = i + 1;
 		data->philosophers[i].times_eaten = 0;
 		data->philosophers[i].last_meal_time = data->start_time;
 		data->philosophers[i].data = data;
+		/* (*data).philosophers[i].id = i + 1;
+		(*data).philosophers[i].times_eaten = 0;
+		(*data).philosophers[i].last_meal_time = (*data).start_time;
+		(*data).philosophers[i].data = data; */
 		i++;
 	}
 	data->simulation_stop = 0;
