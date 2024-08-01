@@ -52,15 +52,16 @@ void	initialize_philosophers(t_data *data)
 		/*So when accessing fields, when do we use dot and when do we use arrow?
 			• If you have a struct, use dot (.).
 			• If you have a pointer to a struct, use arrow (->).
+		You could also write:
+			(*data).philosophers[i].id = i + 1;
+			(*data).philosophers[i].times_eaten = 0;
+			(*data).philosophers[i].last_meal_time = (*data).start_time;
+			(*data).philosophers[i].data = data;
 		*/
 		data->philosophers[i].id = i + 1;
 		data->philosophers[i].times_eaten = 0;
 		data->philosophers[i].last_meal_time = data->start_time;
 		data->philosophers[i].data = data;
-		/* (*data).philosophers[i].id = i + 1;
-		(*data).philosophers[i].times_eaten = 0;
-		(*data).philosophers[i].last_meal_time = (*data).start_time;
-		(*data).philosophers[i].data = data; */
 		i++;
 	}
 	data->simulation_stop = 0;
