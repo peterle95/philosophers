@@ -6,7 +6,7 @@
 /*   By: pmolzer <pmolzer@student.42berlin.de>      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/07/16 19:08:49 by pmolzer           #+#    #+#             */
-/*   Updated: 2024/08/02 15:28:34 by pmolzer          ###   ########.fr       */
+/*   Updated: 2024/08/02 17:18:04 by pmolzer          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -16,6 +16,37 @@ void	handle_single_philosopher(t_philosopher *philo, t_data *data)
 {
 	print_status(data, philo->id, "has taken a fork");
 	accurate_sleep(data->time_to_die);
+	/*The accurate_sleep(data->time_to_die); in the handle_single_philosopher function serves a crucial purpose in simulating the dining philosophers problem for the edge case of having only one philosopher. Let's break down its meaning and purpose:
+
+	Purpose:
+	To simulate the passage of time until the philosopher "dies" of starvation.
+	In the dining philosophers problem, each philosopher has a limited time to eat before they die.
+	
+	Meaning:
+	data->time_to_die represents the maximum time a philosopher can go without eating before they die.
+	The accurate_sleep function makes the thread wait for exactly this amount of time.
+	
+	Simulation accuracy:
+	It ensures that the single philosopher case adheres to the same timing rules as the multi-philosopher scenarios.
+	Without this sleep, the single philosopher case would end instantly, which wouldn't accurately represent the problem.
+	
+	Demonstrating the impossibility of the situation:
+	With only one fork available, the philosopher can never eat (eating requires two forks).
+	The sleep demonstrates that the philosopher will inevitably die in this scenario.
+	
+	Allowing for monitoring:
+	This delay gives time for any monitoring threads or processes to detect and report the philosopher's death.
+	
+	Consistency with multi-threaded behavior:
+	Even though there's only one philosopher, using accurate_sleep maintains consistency with how time is handled in the multi-threaded scenarios.
+	
+	Avoiding busy-waiting:
+	Instead of continuously checking if the time has elapsed, accurate_sleep allows the program to yield control, saving CPU resources.
+	
+	In essence, this line simulates the philosopher sitting at the table, unable to eat, 
+	until they "die" of starvation after the specified time. It's a crucial part of accurately 
+	representing the dining philosophers problem, even in the simplified single-philosopher scenario. 
+	Without this sleep, you would lose the time-based aspect of the simulation for this case, which is a key component of the problem.*/
 }
 
 void	introduce_delay(t_philosopher *philo, t_data *data)
@@ -62,11 +93,18 @@ void	*philosopher_routine(void *arg)
 	We can then access the philosopher's data using philo->id, philo->data, etc.*/
 	data = philo->data;
 	/*Meaning: This line is assigning the data pointer from the philosopher struct to a local variable named data.
+	data is indeed a local variable in the philosopher_routine function. 
+	It's not initialized here, but rather assigned a value from philo->data.
+	The actual initialization of the data structure likely happens in the main setup of the program, 
+	probably in a function like init_data or run_simulation. The philosopher_routine is just creating a
+	local reference to this already initialized structure.
+
 	
 	Purpose:
 	philo->data is likely a pointer to the main t_data structure that contains all shared information about the simulation.
 	By assigning it to a local variable data, we create a shortcut for easier access to this shared information throughout the function.
-	This can make the code more readable and slightly more efficient, as we don't need to dereference philo every time we want to access the shared data.*/
+	This can make the code more readable and slightly more efficient, as we don't need 
+	to dereference philo every time we want to access the shared data.*/
 	left_fork = philo->id - 1;
 	/*Meaning: This calculates the index of the left fork for this philosopher.
 	
