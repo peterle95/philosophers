@@ -6,7 +6,7 @@
 /*   By: pmolzer <pmolzer@student.42berlin.de>      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/07/11 13:54:04 by pmolzer           #+#    #+#             */
-/*   Updated: 2024/07/31 14:10:55 by pmolzer          ###   ########.fr       */
+/*   Updated: 2024/08/02 14:51:40 by pmolzer          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -149,7 +149,7 @@ void	*philosopher_routine(void *arg);
 
 // Death Clock
 bool	death_clock(t_philosopher *philo, t_data *data);
-void	*monitor_routine(void *arg);
+void	*death_clock_routine(void *arg);
 bool	all_philosophers_ate_enough(t_data *data);
 
 // Validate Input

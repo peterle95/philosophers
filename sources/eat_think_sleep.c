@@ -6,7 +6,7 @@
 /*   By: pmolzer <pmolzer@student.42berlin.de>      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/07/16 23:44:56 by pmolzer           #+#    #+#             */
-/*   Updated: 2024/07/16 23:45:41 by pmolzer          ###   ########.fr       */
+/*   Updated: 2024/08/02 15:40:05 by pmolzer          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -32,10 +32,19 @@ void	think_and_take_forks(t_philosopher *philo, t_data *data,
 				int left_fork, int right_fork)
 {
 	print_status(data, philo->id, "is thinking");
-	pthread_mutex_lock(&data->forks[left_fork]);
+	/* pthread_mutex_lock(&data->forks[left_fork]);
 	print_status(data, philo->id, "has taken a fork");
 	pthread_mutex_lock(&data->forks[right_fork]);
-	print_status(data, philo->id, "has taken a fork");
+	print_status(data, philo->id, "has taken a fork"); */
+	 if (philo->id % 2 == 0) {
+        // Even philosophers take right fork first
+        pthread_mutex_lock(&data->forks[right_fork]);
+        pthread_mutex_lock(&data->forks[left_fork]);
+    } else {
+        // Odd philosophers take left fork first
+        pthread_mutex_lock(&data->forks[left_fork]);
+        pthread_mutex_lock(&data->forks[right_fork]);
+    }
 }
 
 void	eat(t_philosopher *philo, t_data *data)

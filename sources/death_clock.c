@@ -6,7 +6,7 @@
 /*   By: pmolzer <pmolzer@student.42berlin.de>      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/07/16 19:15:29 by pmolzer           #+#    #+#             */
-/*   Updated: 2024/08/01 10:58:14 by pmolzer          ###   ########.fr       */
+/*   Updated: 2024/08/01 14:11:02 by pmolzer          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -35,7 +35,7 @@ void	handle_single_philosopher_monitor(t_data *data)
 	data->simulation_stop = 1;
 }
 
-void	*monitor_routine(void *arg)
+void	*death_clock_routine(void *arg)
 {
 	t_data	*data;
 
