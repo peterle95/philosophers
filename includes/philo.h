@@ -75,11 +75,12 @@ typedef struct s_philosopher {
     int id;
     int times_eaten;
     long long last_meal_time;
-    pthread_t thread; // A thread identifier for the thread that will represent this philosopher.
+    pthread_t thread; // A thread identifier for the thread that will represent this philosopher. CHANGE NAME
     struct s_data *data; // A pointer to a s_data structure (defined later) that contains shared data for all philosophers.
 } t_philosopher;
 
 typedef struct s_data {
+  // pthread_t death_thread;
     int num_philosophers;
     long long time_to_die;
     long long time_to_eat;

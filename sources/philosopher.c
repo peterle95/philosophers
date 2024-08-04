@@ -97,9 +97,75 @@ and the introduce_delay function. Here are the key reasons why:
 By keeping both AFA and introduce_delay, you're implementing a more comprehensive solution to the dining philosophers problem. 
 This approach not only solves the immediate requirements but also provides a more robust, fair, and realistic simulation of concurrent resource management.*/
 void	introduce_delay(t_philosopher *philo, t_data *data)
+//Function purpose: This function introduces a delay for some philosophers before they start their eating cycle.
 {
 	if (philo->id % 2 == 0)
+	// Only applied to even philos
 		usleep(data->time_to_eat * 500);
+		/*The delay is set to half of the time_to_eat value (multiplied by 500 to convert from milliseconds to microseconds, as usleep takes microseconds).
+
+		1. Time units:
+		   - `data->time_to_eat` is typically given in milliseconds (ms).
+		   - `usleep` function expects its argument in microseconds (μs).
+		
+		2. Conversion factor:
+		   - 1 millisecond = 1000 microseconds
+		   - However, the code uses 500 instead of 1000. Why?
+		
+		3. The factor of 500:
+		   - This is actually implementing a half-duration sleep.
+		   - 500 is half of 1000, so it's converting milliseconds to microseconds AND halving the duration in one step.
+		
+		4. How the conversion works:
+		   - If `time_to_eat` is 200 ms:
+		     200 * 500 = 100,000 μs
+		   - This is equivalent to 100 ms (half of 200 ms)
+		
+		5. Why half duration:
+		   - This introduces a delay that's half of the eating time.
+		   - It staggers the philosophers without delaying them for a full eating cycle.
+		
+		To break it down step-by-step:
+		1. Start with `time_to_eat` in milliseconds (e.g., 200 ms)
+		2. Multiply by 1000 to convert to microseconds (200 * 1000 = 200,000 μs)
+		3. Divide by 2 to get half the duration (200,000 / 2 = 100,000 μs)
+		4. Steps 2 and 3 combined: 200 * (1000 / 2) = 200 * 500 = 100,000 μs
+		
+		So, multiplying by 500 is a shortcut to convert from milliseconds to microseconds and halve the duration in one operation.
+		
+		This approach introduces a delay that's significant enough to stagger the philosophers' start times, 
+		but not so long that it drastically affects the overall simulation timing. It's a balanced way 
+		to introduce desynchronization among the philosophers.*/
+
+
+
+
+
+/* ╰(*°▽°*)╯ EXAMPLE: (●'◡'●)
+Let's consider a scenario with 5 philosophers and the following parameters:
+- time_to_die: 800 ms
+- time_to_eat: 200 ms
+- time_to_sleep: 200 ms
+
+Without `introduce_delay`:
+1. All philosophers start simultaneously.
+2. Philosophers 1, 3, and 5 might immediately grab their left forks.
+3. This could lead to an immediate deadlock or resource contention.
+
+With `introduce_delay`:
+1. Philosophers 1, 3, and 5 (odd IDs) start immediately.
+2. Philosophers 2 and 4 (even IDs) wait for 100 ms (half of time_to_eat) before starting.
+3. This staggered start allows for the following potential sequence:
+  - t=0ms: Philosopher 1 and 3 might start eating
+  - t=100ms: As 1 and 3 are still eating, 2 and 4 begin their cycle, but forks are occupied
+  - t=200ms: 1 and 3 finish eating, allowing 5 to potentially start eating, while 2 and 4 can now access forks
+
+Benefits:
+1. Reduced initial contention: Not all philosophers compete for forks simultaneously at the start.
+2. Deadlock prevention: The staggered start breaks potential circular wait conditions.
+3. Improved resource utilization: It creates a natural "turn-taking" effect without explicit coordination.
+4. Fairness: Over time, this initial offset tends to provide a more balanced distribution of eating opportunities.
+╰(*°▽°*)╯ END OF EXAMPLE ☆*: .｡. o(≧▽≦)o .｡.:*☆*/
 }
 
 int	check_simulation_stop(t_data *data)
@@ -110,6 +176,15 @@ int	check_simulation_stop(t_data *data)
 	stop = data->simulation_stop;
 	pthread_mutex_unlock(&data->stop_mutex);
 	return (stop);
+	/*
+Key points and techniques:
+
+1. Thread safety: The use of mutexes in `check_simulation_stop` ensures that reading the stop flag is thread-safe, preventing race conditions.
+2. Modular design: The main loop is broken down into separate functions (think_and_take_forks, eat, release_forks_and_sleep), 
+		which improves readability and maintainability.
+3. Continuous loop with exit condition: The while loop continues indefinitely until an 
+		external condition (simulation_stop) is set, allowing for dynamic control of the simulation duration.
+*/
 }
 
 void	*philosopher_routine(void *arg)
@@ -184,7 +259,8 @@ void	*philosopher_routine(void *arg)
 		return (NULL);
 	}
 	introduce_delay(philo, data);
-	while (!check_simulation_stop(data))
+	while (check_simulation_stop(data) == 0)
+	// this loop while continue until the return value is 0
 	{
 		think_and_take_forks(philo, data, left_fork, right_fork);
 		eat(philo, data);

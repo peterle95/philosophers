@@ -31,7 +31,6 @@ int	check_all_philosophers_ate_enough(t_data *data)
 	if (all_philosophers_ate_enough(data))
 	{
 		set_simulation_stop(data);
-		// printf("All philosophers have eaten enough times\n");
 		return (1);
 	}
 	return (0);

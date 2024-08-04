@@ -57,10 +57,6 @@ void	think_and_take_forks(t_philosopher *philo, t_data *data,
 				int left_fork, int right_fork)
 {
 	print_status(data, philo->id, "is thinking");
-	/* pthread_mutex_lock(&data->forks[left_fork]);
-	print_status(data, philo->id, "has taken a fork");
-	pthread_mutex_lock(&data->forks[right_fork]);
-	print_status(data, philo->id, "has taken a fork"); */
 	 if (philo->id % 2 == 0) {
         // Even philosophers take right fork first
         pthread_mutex_lock(&data->forks[right_fork]);
