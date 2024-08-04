@@ -18,9 +18,12 @@ void	cleanup(t_data *data)
 
 	i = 0;
 	if (data->philosophers)
+	/*Checks if philosophers array exists*/
 	{
 		free(data->philosophers);
 		data->philosophers = NULL;
+		/*If it does, frees the memory
+	Sets the pointer to NULL to prevent dangling pointer issues*/
 	}
 	if (data->forks)
 	{
@@ -31,6 +34,11 @@ void	cleanup(t_data *data)
 		}
 		free(data->forks);
 		data->forks = NULL;
+		/*Checks if forks array exists
+		Iterates through all forks (mutexes)
+		Destroys each mutex using pthread_mutex_destroy
+		Frees the memory allocated for the forks array
+		Sets the pointer to NULL*/
 	}
 	pthread_mutex_destroy(&data->write_lock);
 }

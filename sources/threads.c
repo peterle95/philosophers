@@ -100,9 +100,27 @@ int	create_philosopher_threads(t_data *data)
 
 int	create_death_thread(t_data *data, pthread_t *death_clock_thread)
 // The death clock thread monitors the philosophers to check if any of them have "died" (i.e., haven't eaten for too long).
+/*This function takes two parameters:
+a. t_data *data: A pointer to the main data structure of the simulation.
+b. pthread_t *death_clock_thread: A pointer to store the ID of the new thread.*/
 {
 	if (pthread_create(death_clock_thread, NULL, death_clock_routine, data) != 0)
-	/*Go in depths how this function works*/
+	/*This is the core of the function, using pthread_create to spawn the death clock thread. Let's break down the arguments:
+		a. death_clock_thread: Where to store the new thread ID.
+		b. NULL: Default thread attributes.
+		c. death_clock_routine: The function this thread will run.
+		d. data: The main data structure, passed to the routine.
+	
+	How pthread_create works in depth:
+
+	It allocates a new thread in the calling process.
+	It initializes the thread's attributes according to the attr argument (NULL here, so default attributes).
+	It creates a new execution context for the thread.
+	It makes the new thread execute the death_clock_routine function, passing data as its argument.
+		Passing the entire data structure allows the death clock routine to access all necessary information
+	The new thread is created in a joinable state unless specified otherwise in attributes.
+	If successful, it stores the ID of the new thread in the location pointed to by death_clock_thread.
+*/
 	{
 		printf("Error creating death clock thread\n");
 		return (1);
@@ -129,12 +147,17 @@ int	join_philosopher_threads(t_data *data)
 
 int	create_and_run_threads(t_data *data)
 {
-	pthread_t	death_clock_thread;
+	pthread_t	death_clock_thread; // !!! Why create here the thread and not have it in the struct
 
 	if (create_philosopher_threads(data) != 0)
 		return (1);
 	usleep(1000);
+	/*It introduces a small delay to allow all philosopher threads to be created and initialized before the simulation officially starts.
+	It helps to reduce the chance of race conditions that might occur if the start time is set immediately after thread creation.
+	It can help distribute the initial actions of the philosophers, preventing 
+		them from all starting simultaneously, which could lead to immediate deadlocks in some implementations.*/
 	data->start_time = get_current_time();
+	// why is there here and in the "void	initialize_philosophers(t_data *data)", start_time fetching?
 	if (create_death_thread(data, &death_clock_thread) != 0)
 		return (1);
 	if (join_philosopher_threads(data) != 0)

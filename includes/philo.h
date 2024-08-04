@@ -149,7 +149,7 @@ int		init_data(t_data *data, int argc, char **argv);
 void	*philosopher_routine(void *arg);
 
 // Death Clock
-bool	death_clock(t_philosopher *philo, t_data *data);
+bool	is_philosopher_dead(t_philosopher *philo, t_data *data);
 void	*death_clock_routine(void *arg);
 bool	all_philosophers_ate_enough(t_data *data);
 
