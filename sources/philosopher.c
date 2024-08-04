@@ -6,7 +6,7 @@
 /*   By: pmolzer <pmolzer@student.42berlin.de>      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/07/16 19:08:49 by pmolzer           #+#    #+#             */
-/*   Updated: 2024/08/02 17:18:04 by pmolzer          ###   ########.fr       */
+/*   Updated: 2024/08/04 06:11:35 by pmolzer          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -49,11 +49,11 @@ void	handle_single_philosopher(t_philosopher *philo, t_data *data)
 	Without this sleep, you would lose the time-based aspect of the simulation for this case, which is a key component of the problem.*/
 }
 
-void	introduce_delay(t_philosopher *philo, t_data *data)
+/* void	introduce_delay(t_philosopher *philo, t_data *data)
 {
 	if (philo->id % 2 == 0)
 		usleep(data->time_to_eat * 500);
-}
+} */
 
 int	check_simulation_stop(t_data *data)
 {
@@ -136,7 +136,7 @@ void	*philosopher_routine(void *arg)
 		handle_single_philosopher(philo, data);
 		return (NULL);
 	}
-	introduce_delay(philo, data);
+	// introduce_delay(philo, data);
 	while (!check_simulation_stop(data))
 	{
 		think_and_take_forks(philo, data, left_fork, right_fork);
