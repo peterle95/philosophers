@@ -12,11 +12,9 @@
 
 #include "../includes/philo.h"
 
-void	handle_single_philosopher(t_philosopher *philo, t_data *data)
-{
-	print_status(data, philo->id, "has taken a fork");
-	accurate_sleep(data->time_to_die);
-	/*The accurate_sleep(data->time_to_die); in the handle_single_philosopher function serves a crucial purpose in simulating the dining philosophers problem for the edge case of having only one philosopher. Let's break down its meaning and purpose:
+/*The accurate_sleep(data->time_to_die); in the handle_single_philosopher function serves a 
+crucial purpose in simulating the dining philosophers problem for the edge case of having only one philosopher. 
+Let's break down its meaning and purpose:
 
 	Purpose:
 	To simulate the passage of time until the philosopher "dies" of starvation.
@@ -47,13 +45,62 @@ void	handle_single_philosopher(t_philosopher *philo, t_data *data)
 	until they "die" of starvation after the specified time. It's a crucial part of accurately 
 	representing the dining philosophers problem, even in the simplified single-philosopher scenario. 
 	Without this sleep, you would lose the time-based aspect of the simulation for this case, which is a key component of the problem.*/
+void	handle_single_philosopher(t_philosopher *philo, t_data *data)
+{
+	print_status(data, philo->id, "has taken a fork");
+	accurate_sleep(data->time_to_die);
 }
 
-/* void	introduce_delay(t_philosopher *philo, t_data *data)
+
+
+
+/*Based on the analysis of the outputs and the behavior of the simulation, I recommend keeping both the Asymmetric Fork Acquisition (AFA) 
+and the introduce_delay function. Here are the key reasons why:
+
+1. Enhanced Deadlock Prevention:
+   - AFA ensures that philosophers take forks in different orders, reducing the chance of circular waiting.
+   - introduce_delay staggers the start times, further decreasing the likelihood of initial deadlocks.
+
+2. Improved Fairness:
+   - AFA helps balance fork acquisition among philosophers.
+   - introduce_delay creates a more even distribution of start times, potentially leading to fairer resource allocation over time.
+
+3. Reduced Contention:
+   - AFA minimizes the time forks are held individually, reducing partial resource allocation.
+   - introduce_delay spreads out initial fork requests, lowering initial resource contention.
+
+4. More Stable Behavior:
+   - The combination provides more predictable and consistent behavior across different runs.
+   - This stability is beneficial for testing and can help in identifying other potential issues.
+
+5. Robustness Across Scenarios:
+   - Together, they make the simulation more resilient to various philosopher counts and timing parameters.
+   - This robustness is valuable for handling edge cases and different configurations.
+
+6. Efficient Resource Utilization:
+   - AFA ensures philosophers take both forks quickly when available.
+   - introduce_delay helps in creating a more efficient overall pattern of resource usage.
+
+7. Closer to Real-world Scenarios:
+   - The combination better simulates real-world concurrent systems where processes don't all start simultaneously and may have different resource acquisition patterns.
+
+8. Educational Value:
+   - Keeping both demonstrates multiple techniques for handling concurrency issues, which is valuable from an educational perspective.
+
+9. Minimal Drawbacks:
+   - Neither feature introduces significant overhead or complexity.
+   - The benefits outweigh the minor additional code complexity.
+
+10. Future-proofing:
+    - This approach provides a solid foundation if you need to extend the project or handle more complex scenarios in the future.
+
+By keeping both AFA and introduce_delay, you're implementing a more comprehensive solution to the dining philosophers problem. 
+This approach not only solves the immediate requirements but also provides a more robust, fair, and realistic simulation of concurrent resource management.*/
+void	introduce_delay(t_philosopher *philo, t_data *data)
 {
 	if (philo->id % 2 == 0)
 		usleep(data->time_to_eat * 500);
-} */
+}
 
 int	check_simulation_stop(t_data *data)
 {
@@ -136,7 +183,7 @@ void	*philosopher_routine(void *arg)
 		handle_single_philosopher(philo, data);
 		return (NULL);
 	}
-	// introduce_delay(philo, data);
+	introduce_delay(philo, data);
 	while (!check_simulation_stop(data))
 	{
 		think_and_take_forks(philo, data, left_fork, right_fork);

@@ -64,11 +64,15 @@ void	think_and_take_forks(t_philosopher *philo, t_data *data,
 	 if (philo->id % 2 == 0) {
         // Even philosophers take right fork first
         pthread_mutex_lock(&data->forks[right_fork]);
+		print_status(data, philo->id, "has taken a fork");
         pthread_mutex_lock(&data->forks[left_fork]);
+		print_status(data, philo->id, "has taken a fork");
     } else {
         // Odd philosophers take left fork first
         pthread_mutex_lock(&data->forks[left_fork]);
+		print_status(data, philo->id, "has taken a fork");
         pthread_mutex_lock(&data->forks[right_fork]);
+		print_status(data, philo->id, "has taken a fork");
     }
 }
 
