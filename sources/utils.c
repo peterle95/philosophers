@@ -12,9 +12,9 @@
 
 #include "../includes/philo.h"
 
-long	ft_atoll(const char *str)
+long long	ft_atoll(const char *str)
 {
-	long	result;
+	long long	result;
 	int		sign;
 	int		i;
 

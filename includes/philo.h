@@ -188,6 +188,32 @@ typedef struct s_data {
     long long time_to_die;
     long long time_to_eat;
     long long time_to_sleep;
+    /*The use of different integer types (`long` and `long long`) in this code is related to precision requirements and system compatibility. 
+    Let's break this down:
+
+1. `long` is used for:
+   - Time values that represent durations (e.g., `time_to_die`, `time_to_eat`, `time_to_sleep`)
+   - Function return values for time-related functions (e.g., `get_current_time()`)
+
+2. `long long` is used for:
+   - Timestamp values (e.g., `start_time`, `last_meal_time`)
+   - Time difference calculations
+
+The reason for this distinction is likely twofold:
+
+1. Precision: `long long` provides a larger range of values, which is particularly useful for 
+timestamps that might need to represent a very large number of milliseconds since an epoch.
+
+2. Compatibility: On some systems, `long` might be 32-bit while `long long` is guaranteed to be at 
+least 64-bit. Using `long long` for timestamps ensures that the program can run for extended periods without overflow.
+
+However, it's worth noting that this mixing of types can lead to potential issues:
+
+- There's a risk of implicit type conversion when comparing or assigning between `long` and `long long` values.
+- It can make the code less consistent and potentially confusing.
+
+For better consistency and to avoid potential overflow issues, it might be preferable to use `long long` uniformly for all time-related values. Alternatively, 
+defining a custom type (e.g., `typedef long long t_time;`) could improve code clarity and make it easier to change the underlying type if needed in the future.*/
     int meals_to_eat;
     long long start_time; // The timestamp when the simulation starts.
     int simulation_stop; // A flag to indicate when the simulation should stop.
@@ -232,7 +258,7 @@ typedef struct s_data {
 // Utils
 long	get_current_time(void);
 void	print_status(t_data *data, int id, char *status);
-long	ft_atoll(const char *str);
+long long	ft_atoll(const char *str);
 void	set_simulation_stop(t_data *data);
 
 // Cleanup

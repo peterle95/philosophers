@@ -39,7 +39,7 @@ int	validate_input(int ac, char **av)
 	i = 1;
 	while (i < ac)
 	{
-		if (is_number(av[i]) != 0)
+		if (is_number(av[i]) == 0)
 		{
 			printf("Error: Argument is not a valid number\n");
 			return (1);
