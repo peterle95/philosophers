@@ -39,15 +39,15 @@ int	validate_input(int ac, char **av)
 	i = 1;
 	while (i < ac)
 	{
-		if (!is_number(av[i]))
+		if (is_number(av[i]) != 0)
 		{
-			printf("Error: Argument %d is not a valid number\n", i);
+			printf("Error: Argument is not a valid number\n");
 			return (1);
 		}
 		converted_number = ft_atoll(av[i]);
 		if (converted_number > INT_MAX || converted_number <= 0)
 		{
-			printf("Error: Argument %d is out of range\n", i);
+			printf("Error: Argument out of range\n");
 			return (1);
 		}
 		i++;
