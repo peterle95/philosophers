@@ -60,7 +60,7 @@ represent forks and ensure exclusive access to shared resources, and careful tim
 the lifecycle of philosophers and detect starvation.
 
 
-☆*: .｡. o(≧▽≦)o .｡.:*☆ OVERVIEW ☆*: .｡. o(≧▽≦)o .｡.:*☆
+☆*: .｡ o(≧▽≦)o .｡.:*☆ OVERVIEW ☆*: .｡. o(≧▽≦)o .｡.:*☆
 
 I'll provide a comprehensive overview of the code based on the aspects you've outlined.
 
