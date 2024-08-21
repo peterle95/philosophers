@@ -6,7 +6,7 @@
 /*   By: pmolzer <pmolzer@student.42berlin.de>      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/07/16 19:07:27 by pmolzer           #+#    #+#             */
-/*   Updated: 2024/08/21 15:34:45 by pmolzer          ###   ########.fr       */
+/*   Updated: 2024/08/21 15:36:49 by pmolzer          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -70,7 +70,7 @@ void	initialize_philosophers(t_data *data)
 		*/
 		data->philosophers[i].id = i + 1; // Sets a unique ID for each philosopher (starting from 1).
 		data->philosophers[i].times_eaten = 0;
-		data->philosophers[i].last_meal_time = 0;
+		// data->philosophers[i].last_meal_time = data->start_time;
 		/*Sets the last meal time to the start time of the simulation. This is important because it assumes all philosophers 
 		start in a "just eaten" state, giving them the full time_to_die duration before they need to eat again.*/
 		data->philosophers[i].data = data;
