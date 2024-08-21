@@ -6,7 +6,7 @@
 /*   By: pmolzer <pmolzer@student.42berlin.de>      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/07/11 13:54:04 by pmolzer           #+#    #+#             */
-/*   Updated: 2024/08/02 14:51:40 by pmolzer          ###   ########.fr       */
+/*   Updated: 2024/08/19 14:00:41 by pmolzer          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -178,12 +178,11 @@ typedef struct s_philosopher {
     int id;
     int times_eaten;
     long long last_meal_time;
-    pthread_t thread; // A thread identifier for the thread that will represent this philosopher. CHANGE NAME
+    pthread_t thread_philo; // A thread identifier for the thread that will represent this philosopher.
     struct s_data *data; // A pointer to a s_data structure (defined later) that contains shared data for all philosophers.
 } t_philosopher;
 
 typedef struct s_data {
-  // pthread_t death_thread;
     int num_philosophers;
     long long time_to_die;
     long long time_to_eat;

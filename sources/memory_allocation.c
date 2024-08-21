@@ -6,7 +6,7 @@
 /*   By: pmolzer <pmolzer@student.42berlin.de>      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/07/16 20:30:39 by pmolzer           #+#    #+#             */
-/*   Updated: 2024/07/31 14:12:20 by pmolzer          ###   ########.fr       */
+/*   Updated: 2024/08/19 14:45:52 by pmolzer          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -50,4 +50,13 @@ Other elements of the program don't require dynamic allocation:
 
 By allocating only what's necessary, the program maintains efficiency in memory usage. It allocates just 
 enough memory to represent the variable number of philosophers and their associated forks, while keeping 
-other elements of the simulation in fixed-size structures or stack-allocated variables.*/
+other elements of the simulation in fixed-size structures or stack-allocated variables.
+
+
+3. Death Clock: The death clock doesn't need separate memory allocation 
+because it's typically implemented as a single thread that monitors all philosophers. 
+It doesn't need an array or multiple instances.
+It doesn't require dynamic memory allocation because it's just a single thread, and its 
+ID can be stored in a stack-allocated variable within the function that creates it.*/
+
+

@@ -6,7 +6,7 @@
 /*   By: pmolzer <pmolzer@student.42berlin.de>      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/07/16 23:47:52 by pmolzer           #+#    #+#             */
-/*   Updated: 2024/08/02 14:56:20 by pmolzer          ###   ########.fr       */
+/*   Updated: 2024/08/19 14:01:19 by pmolzer          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -19,11 +19,11 @@ int	create_philosopher_threads(t_data *data)
 	i = 0;
 	while (i < data->num_philosophers)
 	{
-		if (pthread_create(&data->philosophers[i].thread, NULL,
+		if (pthread_create(&data->philosophers[i].thread_philo, NULL,
 				philosopher_routine, &data->philosophers[i]) != 0)
 				/*This is the core of the function, using pthread_create to spawn a new thread for each philosopher.
 				Let's break down the arguments:
-				a. &data->philosophers[i].thread: Where to store the new thread ID.
+				a. &data->philosophers[i].thread_philo: Where to store the new thread ID.
 				b. NULL: Default thread attributes.
 				c. philosopher_routine: The function each thread will run.
 				d. &data->philosophers[i]: Pointer to the specific philosopher's data, passed to the routine.
@@ -135,7 +135,7 @@ int	join_philosopher_threads(t_data *data)
 	i = 0;
 	while (i < data->num_philosophers)
 	{
-		if (pthread_join(data->philosophers[i].thread, NULL) != 0)
+		if (pthread_join(data->philosophers[i].thread_philo, NULL) != 0)
 		{
 			printf("Error joining thread\n");
 			return (1);
@@ -147,7 +147,7 @@ int	join_philosopher_threads(t_data *data)
 
 int	create_and_run_threads(t_data *data)
 {
-	pthread_t	death_clock_thread; // !!! Why create here the thread and not have it in the struct
+	pthread_t	death_clock_thread;
 
 	if (create_philosopher_threads(data) != 0)
 		return (1);
