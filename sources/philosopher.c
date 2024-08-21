@@ -6,7 +6,7 @@
 /*   By: pmolzer <pmolzer@student.42berlin.de>      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/07/16 19:08:49 by pmolzer           #+#    #+#             */
-/*   Updated: 2024/08/04 06:11:35 by pmolzer          ###   ########.fr       */
+/*   Updated: 2024/08/21 15:33:16 by pmolzer          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -259,6 +259,7 @@ void	*philosopher_routine(void *arg)
 		return (NULL);
 	}
 	introduce_delay(philo, data);
+	philo->last_meal_time = get_current_time();
 	while (check_simulation_stop(data) == 0)
 	// this loop while continue until the return value is 0
 	{
