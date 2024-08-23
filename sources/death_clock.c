@@ -6,7 +6,7 @@
 /*   By: pmolzer <pmolzer@student.42berlin.de>      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/07/16 19:15:29 by pmolzer           #+#    #+#             */
-/*   Updated: 2024/08/01 14:11:02 by pmolzer          ###   ########.fr       */
+/*   Updated: 2024/08/22 16:58:04 by pmolzer          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -15,6 +15,7 @@
 void	kill_single_philosopher(t_data *data)
 {
 	accurate_sleep(data->time_to_die);
+	// is not handle one philo fct already waiting?
 	printf("%lld 1 died\n", data->time_to_die);
 	data->simulation_stop = 1;
 }

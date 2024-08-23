@@ -6,7 +6,7 @@
 /*   By: pmolzer <pmolzer@student.42berlin.de>      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/07/16 23:47:52 by pmolzer           #+#    #+#             */
-/*   Updated: 2024/08/19 14:01:19 by pmolzer          ###   ########.fr       */
+/*   Updated: 2024/08/21 17:10:32 by pmolzer          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -113,7 +113,12 @@ b. pthread_t *death_clock_thread: A pointer to store the ID of the new thread.*/
 	
 	How pthread_create works in depth:
 
-	It allocates a new thread in the calling process.
+	It creates a new thread of execution within the calling process, but doesn't necessarily allocate memory in the traditional sense. 
+		The operating system manages the resources for the new thread, 
+		including its stack and other internal structures, but this is typically not considered direct memory allocation from the program's perspective. 
+		The "stack" refers to a region of memory automatically allocated for each thread to store local variables, 
+		function parameters, and return addresses. It's a last-in-first-out (LIFO) data structure that grows and shrinks 
+		as functions are called and return. Each thread gets its own stack to maintain its own execution context independently of other threads.
 	It initializes the thread's attributes according to the attr argument (NULL here, so default attributes).
 	It creates a new execution context for the thread.
 	It makes the new thread execute the death_clock_routine function, passing data as its argument.
