@@ -6,12 +6,13 @@
 /*   By: pmolzer <pmolzer@student.42berlin.de>      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/07/16 23:50:04 by pmolzer           #+#    #+#             */
-/*   Updated: 2024/07/16 23:50:49 by pmolzer          ###   ########.fr       */
+/*   Updated: 2024/08/25 22:28:15 by pmolzer          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "../includes/philo.h"
 
+// Checks if all philosophers have eaten the required number of meals
 bool	all_philosophers_ate_enough(t_data *data)
 {
 	int		i;
@@ -22,18 +23,14 @@ bool	all_philosophers_ate_enough(t_data *data)
 	while (i < data->num_philosophers)
 	{
 		if (data->philosophers[i].times_eaten < data->meals_to_eat)
-		/*Check for every philo has eaten enough*/
 			return (false);
 		i++;
 	}
 	return (true);
 }
 
+// Checks if any philosopher has died in the simulation
 int	check_philosopher_deaths(t_data *data)
-/*It iterates through all philosophers in the simulation.
-For each philosopher, it calls is_philosopher_dead.
-If any philosopher is found to be dead, it immediately returns 1 (true).
-If no philosopher is dead, it returns 0 (false).*/
 {
 	int		i;
 
@@ -47,10 +44,10 @@ If no philosopher is dead, it returns 0 (false).*/
 	return (0);
 }
 
+// Checks if all philosophers have eaten enough and stops the simulation if true
 int	check_all_philosophers_ate_enough(t_data *data)
 {
 	if (all_philosophers_ate_enough(data))
-	/*If the function call is true, then enter*/
 	{
 		set_simulation_stop(data);
 		return (1);

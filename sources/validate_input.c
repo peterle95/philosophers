@@ -12,6 +12,7 @@
 
 #include "../includes/philo.h"
 
+// Checks if a string contains only numeric characters
 int	is_number(char *str)
 {
 	int		i;
@@ -26,6 +27,7 @@ int	is_number(char *str)
 	return (1);
 }
 
+// Validates the input arguments for the philosopher program
 int	validate_input(int ac, char **av)
 {
 	int		i;
