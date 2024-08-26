@@ -39,7 +39,7 @@ int	initialize_mutexes(t_data *data)
 	if (initialize_write_lock(data) != 0)
 		return (1);
 	if (initialize_stop_mutex(data) != 0)
-		return(1);
+		return (1);
 	return (0);
 }
 

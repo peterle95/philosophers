@@ -23,5 +23,3 @@ int	allocate_memory(t_data *data)
 	}
 	return (0);
 }
-
-

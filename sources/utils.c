@@ -15,9 +15,9 @@
 // Converts a string to a long long integer
 long long	ft_atoll(const char *str)
 {
-	long long	result;
 	int		sign;
 	int		i;
+	long long		result;
 
 	result = 0;
 	sign = 1;

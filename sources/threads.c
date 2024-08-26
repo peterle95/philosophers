@@ -34,7 +34,8 @@ int	create_philosopher_threads(t_data *data)
 // Creates a thread for the death clock routine
 int	create_death_thread(t_data *data, pthread_t *death_clock_thread)
 {
-	if (pthread_create(death_clock_thread, NULL, death_clock_routine, data) != 0)
+	if (pthread_create(death_clock_thread, NULL,
+			death_clock_routine, data) != 0)
 	{
 		printf("Error creating death clock thread\n");
 		return (1);

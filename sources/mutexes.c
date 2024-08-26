@@ -57,14 +57,14 @@ int	initialize_write_lock(t_data *data)
 }
 
 // Initializes the stop mutex
-int initialize_stop_mutex(t_data *data)
+int	initialize_stop_mutex(t_data *data)
 {
-    if (pthread_mutex_init(&data->stop_mutex, NULL) != 0)
-    {
-        printf("Error: Stop mutex initialization failed\n");
-        destroy_fork_mutexes(data, data->num_philosophers);
-        pthread_mutex_destroy(&data->write_lock);
-        return (1);
-    }
-    return (0);
+	if (pthread_mutex_init(&data->stop_mutex, NULL) != 0)
+	{
+		printf("Error: Stop mutex initialization failed\n");
+		destroy_fork_mutexes(data, data->num_philosophers);
+		pthread_mutex_destroy(&data->write_lock);
+		return (1);
+	}
+	return (0);
 }

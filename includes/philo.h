@@ -22,27 +22,29 @@
 # include <limits.h>
 # include <stdbool.h>
 
-typedef struct s_philosopher {
-    int id;
-    int times_eaten;
-    long long last_meal_time;
-    pthread_t thread_philo;
-    struct s_data *data;
-} t_philosopher;
+typedef struct s_philosopher
+{
+	int		id;
+	int		times_eaten;
+	long long	last_meal_time;
+	pthread_t	thread_philo;
+	struct s_data	*data;
+}		t_philosopher;
 
-typedef struct s_data {
-    int num_philosophers;
-    long long time_to_die;
-    long long time_to_eat;
-    long long time_to_sleep;
-    int meals_to_eat;
-    long long start_time;
-    int simulation_stop;
-    pthread_mutex_t stop_mutex;
-    pthread_mutex_t *forks;
-    pthread_mutex_t write_lock;
-    t_philosopher *philosophers;
-} t_data;
+typedef struct s_data
+{
+	int		num_philosophers;
+	long long	time_to_die;
+	long long	time_to_eat;
+	long long	time_to_sleep;
+	int		meals_to_eat;
+	long long	start_time;
+	int		simulation_stop;
+	pthread_mutex_t	stop_mutex;
+	pthread_mutex_t	*forks;
+	pthread_mutex_t	write_lock;
+	t_philosopher	*philosophers;
+}		t_data;
 
 // Utils
 long	get_current_time(void);
@@ -86,9 +88,9 @@ void	think_and_take_forks(t_philosopher *philo, t_data *data,
 void	eat(t_philosopher *philo, t_data *data);
 
 // Mutexes
-int initialize_stop_mutex(t_data *data);
-int initialize_write_lock(t_data *data);
-void destroy_fork_mutexes(t_data *data, int num_to_destroy);
-int initialize_fork_mutexes(t_data *data);
+int		initialize_stop_mutex(t_data *data);
+int		initialize_write_lock(t_data *data);
+void	destroy_fork_mutexes(t_data *data, int num_to_destroy);
+int		initialize_fork_mutexes(t_data *data);
 
 #endif
