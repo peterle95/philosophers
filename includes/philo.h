@@ -6,7 +6,7 @@
 /*   By: pmolzer <pmolzer@student.42berlin.de>      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/07/11 13:54:04 by pmolzer           #+#    #+#             */
-/*   Updated: 2024/08/29 17:32:08 by pmolzer          ###   ########.fr       */
+/*   Updated: 2024/08/29 17:35:54 by pmolzer          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -24,27 +24,27 @@
 
 typedef struct s_philosopher
 {
-	int		id;
-	int		times_eaten;
-	long	last_meal_time;
-	pthread_t	thread_philo;
+	int				id;
+	int				times_eaten;
+	long			last_meal_time;
+	pthread_t		thread_philo;
 	struct s_data	*data;
-}		t_philosopher;
+}	t_philosopher;
 
 typedef struct s_data
 {
-	int		num_philosophers;
-	long	time_to_die;
-	long	time_to_eat;
-	long	time_to_sleep;
-	int		meals_to_eat;
-	long	start_time;
-	int		simulation_stop;
+	int				num_philosophers;
+	long			time_to_die;
+	long			time_to_eat;
+	long			time_to_sleep;
+	int				meals_to_eat;
+	long			start_time;
+	int				simulation_stop;
 	pthread_mutex_t	stop_mutex;
 	pthread_mutex_t	*forks;
 	pthread_mutex_t	write_lock;
 	t_philosopher	*philosophers;
-}		t_data;
+}	t_data;
 
 // Utils
 long	get_current_time(void);
