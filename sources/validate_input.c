@@ -6,7 +6,7 @@
 /*   By: pmolzer <pmolzer@student.42berlin.de>      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/07/16 19:27:12 by pmolzer           #+#    #+#             */
-/*   Updated: 2024/07/16 19:29:28 by pmolzer          ###   ########.fr       */
+/*   Updated: 2024/08/29 17:32:08 by pmolzer          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -46,7 +46,7 @@ int	validate_input(int ac, char **av)
 			printf("Error: Argument is not a valid number\n");
 			return (1);
 		}
-		converted_number = ft_atoll(av[i]);
+		converted_number = ft_atol(av[i]);
 		if (converted_number > INT_MAX || converted_number <= 0)
 		{
 			printf("Error: Argument out of range\n");

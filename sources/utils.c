@@ -6,18 +6,18 @@
 /*   By: pmolzer <pmolzer@student.42berlin.de>      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/07/16 19:03:05 by pmolzer           #+#    #+#             */
-/*   Updated: 2024/08/25 22:31:16 by pmolzer          ###   ########.fr       */
+/*   Updated: 2024/08/29 17:32:20 by pmolzer          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "../includes/philo.h"
 
-// Converts a string to a long long integer
-long long	ft_atoll(const char *str)
+// Converts a string to a long integer
+long	ft_atol(const char *str)
 {
 	int		sign;
 	int		i;
-	long long		result;
+	long		result;
 
 	result = 0;
 	sign = 1;
@@ -51,14 +51,14 @@ long	get_current_time(void)
 // Prints the status of a philosopher with a timestamp
 void	print_status(t_data *data, int id, char *status)
 {
-	long long	current_time;
+	long	current_time;
 
 	pthread_mutex_lock(&data->stop_mutex);
 	if (!data->simulation_stop)
 	{
 		current_time = get_current_time();
 		pthread_mutex_lock(&data->write_lock);
-		printf("%lld %d %s\n", current_time - data->start_time, id, status);
+		printf("%ld %d %s\n", current_time - data->start_time, id, status);
 		pthread_mutex_unlock(&data->write_lock);
 	}
 	pthread_mutex_unlock(&data->stop_mutex);

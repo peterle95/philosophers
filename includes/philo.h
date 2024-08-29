@@ -6,7 +6,7 @@
 /*   By: pmolzer <pmolzer@student.42berlin.de>      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/07/11 13:54:04 by pmolzer           #+#    #+#             */
-/*   Updated: 2024/08/25 22:27:13 by pmolzer          ###   ########.fr       */
+/*   Updated: 2024/08/29 17:32:08 by pmolzer          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -26,7 +26,7 @@ typedef struct s_philosopher
 {
 	int		id;
 	int		times_eaten;
-	long long	last_meal_time;
+	long	last_meal_time;
 	pthread_t	thread_philo;
 	struct s_data	*data;
 }		t_philosopher;
@@ -34,11 +34,11 @@ typedef struct s_philosopher
 typedef struct s_data
 {
 	int		num_philosophers;
-	long long	time_to_die;
-	long long	time_to_eat;
-	long long	time_to_sleep;
+	long	time_to_die;
+	long	time_to_eat;
+	long	time_to_sleep;
 	int		meals_to_eat;
-	long long	start_time;
+	long	start_time;
 	int		simulation_stop;
 	pthread_mutex_t	stop_mutex;
 	pthread_mutex_t	*forks;
@@ -49,7 +49,7 @@ typedef struct s_data
 // Utils
 long	get_current_time(void);
 void	print_status(t_data *data, int id, char *status);
-long long	ft_atoll(const char *str);
+long	ft_atol(const char *str);
 void	set_simulation_stop(t_data *data);
 
 // Cleanup
@@ -80,7 +80,7 @@ int		validate_input(int argc, char **argv);
 int		allocate_memory(t_data *data);
 
 // Eat Think And Sleep
-void	accurate_sleep(long long time_in_ms);
+void	accurate_sleep(long time_in_ms);
 void	release_forks_and_sleep(t_philosopher *philo, t_data *data,
 			int left_fork, int right_fork);
 void	think_and_take_forks(t_philosopher *philo, t_data *data,

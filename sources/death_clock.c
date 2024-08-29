@@ -6,7 +6,7 @@
 /*   By: pmolzer <pmolzer@student.42berlin.de>      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/07/16 19:15:29 by pmolzer           #+#    #+#             */
-/*   Updated: 2024/08/25 22:29:16 by pmolzer          ###   ########.fr       */
+/*   Updated: 2024/08/29 17:32:20 by pmolzer          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -16,7 +16,7 @@
 void	kill_single_philosopher(t_data *data)
 {
 	accurate_sleep(data->time_to_die);
-	printf("%lld 1 died\n", data->time_to_die);
+	printf("%ld 1 died\n", data->time_to_die);
 	data->simulation_stop = 1;
 }
 
@@ -38,7 +38,7 @@ bool	is_philosopher_dead(t_philosopher *philo, t_data *data)
 			death_time = philo->last_meal_time + data->time_to_die;
 			pthread_mutex_unlock(&data->stop_mutex);
 			pthread_mutex_lock(&data->write_lock);
-			printf("%lld %d died\n", death_time - data->start_time, philo->id);
+			printf("%ld %d died\n", death_time - data->start_time, philo->id);
 			pthread_mutex_unlock(&data->write_lock);
 			return (true);
 		}

@@ -6,17 +6,17 @@
 /*   By: pmolzer <pmolzer@student.42berlin.de>      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/07/16 23:44:56 by pmolzer           #+#    #+#             */
-/*   Updated: 2024/08/25 22:29:38 by pmolzer          ###   ########.fr       */
+/*   Updated: 2024/08/29 17:31:47 by pmolzer          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "../includes/philo.h"
 
 // Implements a more precise sleep function for accurate timing
-void	accurate_sleep(long long time_in_ms)
+void	accurate_sleep(long time_in_ms)
 {
-	long long	start;
-	long long	end;
+	long	start;
+	long	end;
 
 	start = get_current_time();
 	end = start + time_in_ms;

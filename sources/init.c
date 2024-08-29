@@ -6,7 +6,7 @@
 /*   By: pmolzer <pmolzer@student.42berlin.de>      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/07/16 19:07:27 by pmolzer           #+#    #+#             */
-/*   Updated: 2024/08/25 22:29:59 by pmolzer          ###   ########.fr       */
+/*   Updated: 2024/08/29 17:32:08 by pmolzer          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -16,11 +16,13 @@
 int	parse_arguments(t_data *data, int argc, char **argv)
 {
 	data->num_philosophers = atoi(argv[1]);
-	data->time_to_die = ft_atoll(argv[2]);
-	data->time_to_eat = ft_atoll(argv[3]);
-	data->time_to_sleep = ft_atoll(argv[4]);
+	data->time_to_die = ft_atol(argv[2]);
+	data->time_to_eat = ft_atol(argv[3]);
+	data->time_to_sleep = ft_atol(argv[4]);
 	if (argc == 6)
-		data->meals_to_eat = atoi(argv[5]);
+		data->meals_to_eat = ft_atol(argv[5]);
+	else
+		data->meals_to_eat = -1;
 	if (data->num_philosophers < 1 || data->time_to_die
 		< 0 || data->time_to_eat < 0 || data->time_to_sleep
 		< 0 || (argc == 6 && data->meals_to_eat < 0))
