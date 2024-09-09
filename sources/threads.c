@@ -6,7 +6,7 @@
 /*   By: pmolzer <pmolzer@student.42berlin.de>      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/07/16 23:47:52 by pmolzer           #+#    #+#             */
-/*   Updated: 2024/08/25 22:30:59 by pmolzer          ###   ########.fr       */
+/*   Updated: 2024/09/10 00:11:40 by pmolzer          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -69,7 +69,9 @@ int	create_and_run_threads(t_data *data)
 	if (create_philosopher_threads(data) != 0)
 		return (1);
 	usleep(1000);
+	pthread_mutex_lock(&data->stop_mutex); // Lock before accessing shared data
 	data->start_time = get_current_time();
+	pthread_mutex_unlock(&data->stop_mutex); // Unlock after updating
 	if (create_death_thread(data, &death_clock_thread) != 0)
 		return (1);
 	if (join_philosopher_threads(data) != 0)

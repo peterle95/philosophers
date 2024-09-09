@@ -6,7 +6,7 @@
 /*   By: pmolzer <pmolzer@student.42berlin.de>      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/07/16 23:44:56 by pmolzer           #+#    #+#             */
-/*   Updated: 2024/08/29 17:31:47 by pmolzer          ###   ########.fr       */
+/*   Updated: 2024/09/10 00:14:14 by pmolzer          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -53,10 +53,13 @@ void	think_and_take_forks(t_philosopher *philo, t_data *data,
 // Simulates the eating phase for a philosopher
 void	eat(t_philosopher *philo, t_data *data)
 {
+	pthread_mutex_lock(&data->stop_mutex); // Lock before accessing shared data
 	philo->last_meal_time = get_current_time();
+	philo->times_eaten++; // Increment times_eaten while locked
+	pthread_mutex_unlock(&data->stop_mutex); // Unlock after updating
+
 	print_status(data, philo->id, "is eating");
 	accurate_sleep(data->time_to_eat);
-	philo->times_eaten++;
 }
 
 // Handles the release of forks and the sleeping phase for a philosopher

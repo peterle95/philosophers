@@ -6,7 +6,7 @@
 /*   By: pmolzer <pmolzer@student.42berlin.de>      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/07/16 19:15:29 by pmolzer           #+#    #+#             */
-/*   Updated: 2024/08/29 17:32:20 by pmolzer          ###   ########.fr       */
+/*   Updated: 2024/09/10 00:11:35 by pmolzer          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -27,23 +27,23 @@ bool	is_philosopher_dead(t_philosopher *philo, t_data *data)
 	long	time_since_last_meal;
 	long	death_time;
 
+	pthread_mutex_lock(&data->stop_mutex); // Lock before accessing shared data
 	current_time = get_current_time();
-	time_since_last_meal = current_time - philo->last_meal_time;
+	time_since_last_meal = current_time - philo->last_meal_time; // Access last_meal_time while locked
 	if (time_since_last_meal > data->time_to_die)
 	{
-		pthread_mutex_lock(&data->stop_mutex);
 		if (data->simulation_stop == 0)
 		{
 			data->simulation_stop = 1;
 			death_time = philo->last_meal_time + data->time_to_die;
-			pthread_mutex_unlock(&data->stop_mutex);
+			pthread_mutex_unlock(&data->stop_mutex); // Unlock before printing
 			pthread_mutex_lock(&data->write_lock);
 			printf("%ld %d died\n", death_time - data->start_time, philo->id);
 			pthread_mutex_unlock(&data->write_lock);
 			return (true);
 		}
-		pthread_mutex_unlock(&data->stop_mutex);
 	}
+	pthread_mutex_unlock(&data->stop_mutex); // Unlock after checking
 	return (false);
 }
 
