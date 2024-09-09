@@ -6,7 +6,7 @@
 /*   By: pmolzer <pmolzer@student.42berlin.de>      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/07/16 19:07:27 by pmolzer           #+#    #+#             */
-/*   Updated: 2024/08/29 17:32:08 by pmolzer          ###   ########.fr       */
+/*   Updated: 2024/09/09 23:38:52 by pmolzer          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -19,6 +19,7 @@ int	parse_arguments(t_data *data, int argc, char **argv)
 	data->time_to_die = ft_atol(argv[2]);
 	data->time_to_eat = ft_atol(argv[3]);
 	data->time_to_sleep = ft_atol(argv[4]);
+	data->meals_to_eat = -1;
 	if (argc == 6)
 		data->meals_to_eat = ft_atol(argv[5]);
 	else

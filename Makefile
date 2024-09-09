@@ -6,7 +6,7 @@
 #    By: pmolzer <pmolzer@student.42berlin.de>      +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2024/07/11 14:38:20 by pmolzer           #+#    #+#              #
-#    Updated: 2024/08/25 22:31:45 by pmolzer          ###   ########.fr        #
+#    Updated: 2024/09/09 23:35:04 by pmolzer          ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
@@ -15,7 +15,7 @@ SRCS =  $(wildcard sources/*.c)
 OBJS = ${SRCS:.c=.o}
 
 CC = cc
-CFLAGS = -Wall -Wextra -Werror -Iincludes -pthread -g
+CFLAGS = -Wall -Wextra -Werror -Iincludes -pthread -g -fsanitize=thread
 
 RM = rm -rf
 
