@@ -53,3 +53,6 @@ This command starts a simulation with 5 philosophers, where each philosopher mus
 ## Conclusion
 
 The Philosophers project serves as an educational tool for understanding synchronization issues in concurrent programming. It demonstrates the use of threads, mutexes, and proper resource management in a multithreaded environment.
+
+---
+Made by pmolzer: pmolzer@student.42berlin.de | LinkedIn: [pmolzer](https://www.linkedin.com/in/peter-moelzer//) 
